@@ -779,21 +779,36 @@ let iniEvo=false,evoAjusta=()=>{};
 function evolucion(){
   if(iniEvo){evoAjusta();return}iniEvo=true;
   const norm=t=>t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,' ');
-  const STOP=new Set(['de','la','el','los','las','y','en','del','al','con','por','para','una','desde']);
+  const STOP=new Set(['de','la','el','los','las','y','en','del','al','con','por','para','una','desde','planta','plantas','seccion','secciones','alzado','alzados','vista','vistas','nivel']);
   const pal=t=>new Set(norm(t).split(/\s+/).filter(w=>w.length>2&&!STOP.has(w)).map(w=>w.length>4?w.replace(/s$/,''):w));
   const sim=(a,b)=>{const A=pal(a),B=pal(b);let n=0;A.forEach(w=>B.has(w)&&n++);return n/Math.max(1,Math.min(A.size,B.size))};
   const NIV=[['sotano',/sotano|semisotano/],['baja',/\bbaja\b|\b00\b|acceso|0[,.]00/],['primera',/primera|\b01\b|\balta\b|entresuelo/],['segunda',/segunda|\b02\b/],['tercera',/tercera|\b03\b/],['cuarta',/cuarta|\b04\b/],['cubierta',/cubierta/]];
   const niveles=t=>{const n=norm(t);return new Set(NIV.filter(([,r])=>r.test(n)).map(([k])=>k))};
-  const compatibles=(p,q)=>{if(p.t!=='planta'||q.t!=='planta')return true;const a=niveles(p.n),b=niveles(q.n);if(!a.size||!b.size)return true;for(const x of a)if(b.has(x))return true;return false};
+  const ORIS=t=>new Set((norm(t).match(/\b(noreste|noroeste|sureste|suroeste|norte|sur|este|oeste)\b/g)||[]));
+  const compatibles=(p,q)=>{
+    if(p.t==='sección/alzado'&&/alzado/i.test(p.n)!==/alzado/i.test(q.n))return false;
+    const oa=ORIS(p.n),ob=ORIS(q.n);if(/alzado/i.test(p.n)&&oa.size&&ob.size&&(oa.size!==ob.size||[...oa].some(x=>!ob.has(x))))return false;
+    if(p.t!=='planta'||q.t!=='planta')return true;const a=niveles(p.n),b=niveles(q.n);if(!a.size||!b.size)return true;for(const x of a)if(b.has(x))return true;return false};
   function pares(c,l1,l2){
     const P1=PLANOS.filter(p=>p.caso===c&&p.l===l1),P2=PLANOS.filter(p=>p.caso===c&&p.l===l2),usados=new Set(),hechos=new Set(),out=[];
-    P1.forEach(p=>{let best=null,bs=0;P2.forEach(q=>{if(q.t!==p.t||usados.has(q.id)||!compatibles(p,q))return;const s=sim(p.n,q.n)+(q.c&&q.c===p.c?0.4:0);if(s>bs){bs=s;best=q}});if(best&&bs>0.5){usados.add(best.id);out.push([p,best]);hechos.add(p.id)}});
-    P1.forEach(p=>{if(hechos.has(p.id)||!p.c)return;const q=P2.find(q=>!usados.has(q.id)&&q.t===p.t&&q.c===p.c&&compatibles(p,q));if(q){usados.add(q.id);out.push([p,q])}});
+    P1.forEach(p=>{let best=null,bs=0;P2.forEach(q=>{if(q.t!==p.t||usados.has(q.id)||!compatibles(p,q))return;const r=sim(p.n,q.n);if(r<0.5&&!(r>=0&&pal(p.n).size===0&&pal(q.n).size===0))return;const s=r+(q.c&&q.c===p.c?0.4:0);if(s>bs){bs=s;best=q}});if(best){usados.add(best.id);out.push([p,best]);hechos.add(p.id)}});
+    // Lo que no tiene pareja clara no se compara.
     return out.sort((a,b)=>PLANOS.indexOf(a[0])-PLANOS.indexOf(b[0]));
   }
   const lineasDe=c=>[...new Set(PLANOS.filter(p=>p.caso===c).map(p=>p.l))].sort();
   const KR={'planta':'planta','sección/alzado':'sección','vista':'vista'};
   const realDe=(c,t)=>{const R=REAL[c];const i=R&&R.imgs.find(x=>x.k===KR[t]);return i?{l:'Real',real:i.f,n:'Obra original · '+i.t,t}:null};
+  // Cada imagen de la obra real se compara con UNA sola lámina de la propuesta: la que mejor le corresponde.
+  function paresReal(c,l){const R=REAL[c];if(!R)return[];const usados=new Set(),out=[];
+    const TK={'planta':'planta','sección':'sección/alzado','vista':'vista'};
+    R.imgs.forEach(i=>{const t=TK[i.k];if(!t)return;
+      const cand=PLANOS.filter(p=>p.caso===c&&p.l===l&&p.t===t&&!usados.has(p.id)&&!(t==='sección/alzado'&&/alzado/i.test(p.n)&&!/secci/i.test(p.n)));
+      let best=null,bs=-1;cand.forEach((p,k)=>{let s=sim(p.n,i.t)-k*0.01;
+        if(t==='planta'){const a=niveles(i.t),b=niveles(p.n);if(a.size&&b.size)s+=[...a].some(x=>b.has(x))?1:-1;else if(b.has('baja'))s+=0.5}
+        if(t==='sección/alzado'&&/generadora/i.test(p.n))s+=0.2;
+        if(s>bs){bs=s;best=p}});
+      if(best){usados.add(best.id);out.push([best,{l:'Real',real:i.f,n:'Obra original · '+i.t,t}])}});
+    return out}
   const combos=c=>{const L=lineasDe(c),o=[];for(let i=0;i<L.length;i++)for(let j=i+1;j<L.length;j++)o.push([L[i],L[j]]);
     if(REAL[c]&&REAL[c].imgs.length)L.forEach(l=>o.push([l,'R']));return o};
   const casosCmp=todos.filter(c=>combos(c).length);
@@ -803,8 +818,8 @@ function evolucion(){
   $('#cCaso').value=casosCmp[casosCmp.length-1];
   function onCaso(){const cb=combos($('#cCaso').value);opts($('#cLin'),cb.map(([a,b])=>[a+b,a+(b==='R'?' frente a la obra real':' frente a '+b)]));onLin()}
   function onLin(){const c=$('#cCaso').value,v=$('#cLin').value;
-    par=v[1]==='R'?PLANOS.filter(p=>p.caso===c&&p.l===v[0]&&KR[p.t]).map(p=>[p,realDe(c,p.t)]).filter(x=>x[1]):pares(c,v[0],v[1]);
-    opts($('#cPar'),par.map(([p,q],i)=>[i,(p.c?p.c+' · ':'')+p.n+(q.real?'  ↔  '+q.n.replace('Obra original · ','real: '):'')]));onPar()}
+    par=v[1]==='R'?paresReal(c,v[0]):pares(c,v[0],v[1]);
+    opts($('#cPar'),par.map(([p,q],i)=>[i,(p.c?p.c+' · ':'')+p.n+'  ↔  '+(q.real?q.n.replace('Obra original · ','real: '):(q.c?q.c+' · ':'')+q.n)]));onPar()}
   const geo=p=>{const ok=p.esc&&p.pw&&p.ph,W=ok?p.pw*p.esc/1000:1,H=ok?p.ph*p.esc/1000:(p.ph&&p.pw?p.ph/p.pw:0.707),bb=p.bb||[0,0,1,1];
     return {ok,W,H,bb,cw:(bb[2]-bb[0])*W,ch:(bb[3]-bb[1])*H,cx:(bb[0]+bb[2])/2*W,cy:(bb[1]+bb[3])/2*H}};
   // Las dos láminas se muestran al MISMO TAMAÑO: el dibujo de cada una se ajusta al recuadro, aunque estén a escalas distintas.
