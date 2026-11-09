@@ -1124,7 +1124,7 @@ function metodo(){
   $('#vCB').innerHTML=grupo(METODO.versiones.filter(x=>x.fase==='cb'),true);
   $$('.vmb').forEach(b=>b.onclick=()=>{const ab=b.getAttribute('aria-expanded')!=='true';b.setAttribute('aria-expanded',ab);$('#'+b.getAttribute('aria-controls')).hidden=!ab;b.querySelector('.tg2').textContent=ab?'Ocultar':b.dataset.tx});
   // Línea de tiempo: cada versión es un punto (negro si con ella se hizo algún caso); debajo, sus cambios por línea.
-  {const V=METODO.versiones,n=V.length,W=920,H=258,L=26,R=26,st=(W-L-R)/(n-1),y0=118,u=7;
+  {const V=METODO.versiones,n=V.length,W=920,H=244,L=26,R=26,st=(W-L-R)/(n-1),y0=118,u=7;
    const xs=i=>L+st*i,ncam=x=>{let lin='C';const o={A:0,B:0,C:0};x.cambios.forEach(c=>{if(c[0]==='#'){lin=/L[ií]nea A/.test(c[1])?'A':/L[ií]nea B/.test(c[1])?'B':'C'}else o[lin]++});return o};
    const rec={};ERRORES.forEach(e=>{if(e.vr)rec[e.vr]=(rec[e.vr]||0)+1});
    const corto2=t=>(t.match(/\d{3}/g)||[]).join('–');
@@ -1141,7 +1141,6 @@ function metodo(){
      let yb=y0+12;[['A','#111','#111'],['B','#9a9a9a','#9a9a9a'],['C','#fff','#111']].forEach(([k,fill,str])=>{if(!o[k])return;const h=o[k]*u;s+=`<rect class="cr" x="${cx-5}" y="${yb}" width="10" height="${h-1}" fill="${fill}" stroke="${str}" stroke-width="1" style="transform-origin:50% 0;transition-delay:${i*45}ms"/>`;yb+=h});
      s+=`<circle cx="${cx}" cy="${y0}" r="5" fill="${x.casos?'#111':'#fff'}" stroke="#111" stroke-width="1.4"/>`;
      const m1=x.v.match(/^v(\d+)/)[1];if(!i||V[i-1].v.match(/^v(\d+)/)[1]!==m1)s+=`<text x="${cx}" y="${H-24}" text-anchor="middle" font-size="12" font-weight="600" fill="#111">v${m1}</text>`;
-     if(rec[x.v])s+=`<text x="${cx}" y="${H-9}" text-anchor="middle" font-size="9.5" fill="#8a8a8a">${rec[x.v]} err.</text>`;
      s+='</g>'});
    $('#vLin').innerHTML=s+'</svg>';conTip($('#vLin'));anima($('#vLin'));
    $('#vLin').onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset.ver){e.preventDefault();verPop(e.target.dataset.ver)}}}
