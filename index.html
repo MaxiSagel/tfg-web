@@ -478,6 +478,35 @@ svg .nd{cursor:pointer}svg .nd:hover rect{fill:#555}
 .crit .com li{padding:9px 0;border-bottom:1px solid var(--li);color:#333;line-height:1.5}
 .crit .com li b{color:var(--tx);font-weight:600}
 svg a.tlink text{cursor:pointer}svg a.tlink:hover text{text-decoration:underline}
+/* Recorrido de un caso */
+.rp{display:grid;grid-template-columns:130px minmax(0,1fr);gap:20px 40px;padding:36px 0;border-top:1px solid var(--li)}
+.rp:first-of-type{border-top:0;padding-top:4px}
+@media(max-width:700px){.rp{grid-template-columns:1fr;gap:8px;padding:28px 0}}
+.rp .rn{font:200 56px/1 var(--serif);letter-spacing:-.04em}
+.rp .rt{font:600 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--mu);margin-top:8px}
+.rp h4{font:400 26px/1.2 var(--serif);margin:0 0 14px;letter-spacing:-.02em}
+.rp p{margin:0 0 12px;max-width:72ch}
+.rl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;margin-top:6px}
+.rl figure{margin:0;cursor:zoom-in}
+.rl .im{border:1px solid var(--li);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:#fff;padding:6px;transition:border-color .25s}
+.rl figure:hover .im,.rl figure:focus .im{border-color:var(--tx)}
+.rl img{max-width:100%;max-height:100%}
+.rl figcaption{font:12.5px/1.45 var(--sans);color:#444;margin-top:8px}
+.rl figcaption b{color:var(--tx);font-weight:600}
+.rid,.rev{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px 40px;margin-bottom:18px}
+.rid h5,.rev h5{font:600 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin:0 0 6px}
+.rev .big{font:300 46px/1 var(--serif);letter-spacing:-.03em}
+.csq{display:flex;gap:2px;margin-top:12px;flex-wrap:wrap}
+.csq a{width:18px;height:18px;border:1px solid var(--tx);display:block}
+.csq a.n2{background:#111}.csq a.n1{background:#9a9a9a;border-color:#9a9a9a}.csq a.np{border:1px dashed #bbb}
+.rerr{overflow-x:auto}
+.rerr table{border-collapse:collapse;font:13px var(--sans);margin:0 0 18px}
+.rerr th,.rerr td{text-align:left;padding:7px 22px 7px 0;border-bottom:1px solid var(--li);white-space:nowrap}
+.rerr th{font-weight:500;color:var(--mu);font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-bottom-color:var(--tx)}
+.rq{border-left:2px solid var(--tx);padding:2px 0 2px 16px;margin:16px 0;cursor:pointer;max-width:72ch;font-size:16.5px;line-height:1.5}
+.rq:hover{background:var(--su)}
+.rq small{display:block;color:var(--mu);font:12px var(--sans);margin-top:6px}
+.rnav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--tx);padding-top:22px;margin-top:10px}
 /* Enlace a una lámina */
 #lbLink.ok{color:#fff;background:var(--tx);border-radius:50%}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
@@ -929,7 +958,7 @@ $('#grid').onclick=e=>{const f=e.target.closest('.card');if(f)abre(vis.map(itemP
 pinta();
 
 // ---------- Ficha de caso ----------
-let fl=[],fr=[];
+let fl=[],fr=[],rg=[];
 function ficha(c){
   const f=FICHAS[c],ps=PLANOS.filter(p=>p.caso===c),R=REAL[c],t=f.tabla;
   let h=`<a class="volver" href="#casos">← Todos los casos</a><h1>${esc(nom(c))}</h1><p class="meta">Caso ${nCaso(c)} · ${esc(f.arq)} · ${f.anio} · ${esc(cap(f.tip))} · ${esCB(c)?'Fase Campo Baeza':'Fase piloto'} · Hecho con la ${verM(f.protocolo)}</p>`;
@@ -938,10 +967,44 @@ function ficha(c){
   h+=`<div class="acciones">${lins.length>1||REAL[c]?`<a class="ir" href="#evolucion/${c}">Comparar propuestas →</a>`:''}${f.encargo_pag?`<a class="ir" href="memorias/${c}_encargo.html">Encargo completo →</a>`:''}<button class="ir" id="fImp">Imprimir la ficha</button></div>`;
   let tabs='';const pane=(tit,cuerpo)=>{tabs+=`<section class="pane" data-tab="${esc(tit)}">${cuerpo}</section>`};
   fl=ps;
+  // Recorrido: el caso contado en orden, de la obra original a lo que se aprendió.
+  rg=[];
+  {const L=lins.slice().sort();let n=0,r='';
+   const paso=(t,h,cuerpo)=>{n++;r+=`<div class="rp"><div><div class="rn">${String(n).padStart(2,'0')}</div><div class="rt">${t}</div></div><div>${h?`<h4>${h}</h4>`:''}${cuerpo}</div></div>`};
+   const elige={croquis:q=>q.find(p=>p.t==='croquis'),
+     seccion:q=>q.find(p=>p.t==='sección/alzado'&&/generadora/i.test(p.n))||q.find(p=>p.t==='sección/alzado'&&/secci/i.test(p.n)),
+     planta:q=>q.find(p=>p.t==='planta'&&/\bbaja\b|acceso|conjunto|general/i.test(p.n))||q.find(p=>p.t==='planta'),
+     vista:q=>q.find(p=>p.t==='vista')};
+   const fila=k=>{const its=L.map(l=>[l,elige[k](ps.filter(p=>p.l===l))]).filter(x=>x[1]);if(!its.length)return '';
+     const gi=rg.length;rg.push(its.map(([,p])=>itemPlano(p)));
+     return `<div class="rl">${its.map(([l,p],i)=>`<figure tabindex="0" data-g="${gi}" data-k="${i}"><div class="im"><img loading="lazy" src="img/thumb/${p.id}.webp" alt="${esc(p.n)}"></div><figcaption><b>${linea(l,c)}</b> · ${p.c?p.c+' · ':''}${esc(p.n)}</figcaption></figure>`).join('')}</div>`};
+   if(R&&R.imgs.length){const k=Math.max(0,R.imgs.findIndex(i=>i.k==='vista')),im=R.imgs[k];
+     paso('La obra',esc(nom(c)),`<p>${esc(f.arq)}, ${f.anio}. ${esc(cap(f.tip))}. ${esCB(c)?'El encargo la nombra y pide reinterpretarla sin copiarla: quien diseña sabe de qué obra se trata, pero no ve estas imágenes.':'En la fase piloto el encargo era anónimo: quien diseñaba no sabía de qué obra se trataba.'}</p><div class="rl" style="max-width:620px"><figure tabindex="0" data-r="${k}"><div class="im"><img loading="lazy" src="img/real/${im.f}.webp" alt="${esc(im.t)}"></div><figcaption>Obra original · ${esc(im.t)}</figcaption></figure></div>`)}
+   if(f.encargo)paso('El encargo','Lo que se pide',`<p>${esc(corto(llano(f.encargo),560))}</p>${f.encargo_pag?`<p><a class="ir" href="memorias/${c}_encargo.html">Leer el encargo completo →</a></p>`:''}`);
+   const ids=L.filter(l=>f.ideas[l]);
+   if(ids.length)paso('La idea','Primero la idea, después la forma',`<div class="rid">${ids.map(l=>`<div><h5>${linea(l,c)}</h5><p>${esc(llano(f.ideas[l]))}</p></div>`).join('')}</div>${fila('croquis')}`);
+   const fS=fila('seccion');if(fS)paso('La sección','Donde se lee la idea',fS);
+   const fP=fila('planta');if(fP)paso('La planta','El orden del programa',fP);
+   const fV=fila('vista');if(fV)paso('La vista','Cómo se ve',fV);
+   const K=RESULTADOS.casos.find(k=>k.caso===c),CR=RESULTADOS.criterios[c];
+   if(K){const ev=L.filter(l=>K[l.toLowerCase()]!=null).map(l=>{const lo=l.toLowerCase(),fi=K['f'+lo];
+       const sq=CR?`<div class="csq">${CR.map(k=>{const v=k[l],id=k.c.split(' ')[0];return `<a href="#teoria/${id}" class="${v==null?'np':'n'+v}" title="${esc(k.c)}: ${v==null?'no procede':v+' de 2'}" aria-label="${esc(k.c)}: ${v==null?'no procede':v+' de 2'}"></a>`}).join('')}</div>`:'';
+       return `<div><h5>${linea(l,c)}</h5>${fi!=null?`<div class="big">${Math.round(fi)} %</div><p class="nota" style="margin:4px 0 0">de fidelidad a la teoría</p>${sq}`:''}<p style="margin-top:12px">Parecido con la obra real: <b>${num(K[lo])}</b> de 5${K['r'+lo]?` · ${esc(K['r'+lo])}`:''}.</p></div>`}).join('');
+     paso('La evaluación',esCB(c)?'Medida a ciegas':'Medida frente a la obra real',`<p>${esCB(c)?'Unos evaluadores que no saben qué propuesta es cuál miden su fidelidad a la teoría y su parecido con la obra. Cada cuadrado es un criterio: negro, se ve en el dibujo; gris, solo de palabra; blanco, falta. Pulsa uno para leer el criterio.':'En la fase piloto solo se medía el parecido con la obra real, de 0 a 5.'}</p><div class="rev">${ev}</div>`)}
+   const E=ERRORES.filter(e=>e.caso===c);
+   if(E.length){const FS=['f0','f1','f2','fV','cierre'].filter(x=>E.some(e=>e.f===x)),LE=L.filter(l=>E.some(e=>e.l===l));
+     const cel=(l,x)=>{const q=E.filter(e=>e.l===l&&e.f===x),h=q.filter(e=>e.o==='humano').length;return q.length?`${q.length}${h?` <span style="color:var(--mu)">(${h} del autor)</span>`:''}`:'—'};
+     const tab=`<table><thead><tr><th>Fase</th>${LE.map(l=>`<th>${linea(l,c)}</th>`).join('')}</tr></thead><tbody>${FS.map(x=>`<tr><td>${FASE[x]||x}</td>${LE.map(l=>`<td>${cel(l,x)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+     const gv={grave:0,media:1,leve:2};
+     const ej=LE.map(l=>E.filter(e=>e.l===l&&e.v==='error').sort((a,b)=>(gv[a.g]-gv[b.g])||((b.o==='humano')-(a.o==='humano')))[0]).filter(Boolean);
+     paso('Las correcciones',`${E.length} errores registrados`,`<p>Cada error, lo detecte la IA o lo señale el autor, queda registrado con la fase en la que apareció. Abajo, el más grave de cada línea.</p><div class="rerr">${tab}</div>${ej.map(e=>`<div class="rq" tabindex="0" data-e="${e.id}">${esc(corto(llano(e.txt),260))}<small>${e.id} · ${linea(e.l,c)} · ${FASE[e.f]||e.f} · lo vio ${DET[e.d]||e.d} · ${cap(e.g)}</small></div>`).join('')}<p style="margin-top:20px"><a class="ir" href="#aprendizaje/${c}">Ver todos los errores del caso →</a></p>`);
+     const vs=[...new Set(E.map(e=>e.vr).filter(Boolean))].sort(ordenV),pend=E.filter(e=>!e.vr&&e.en!=='ninguna').length;
+     paso('Lo aprendido','Del error a la versión siguiente',`<p>${vs.length?`Los errores de este caso se convirtieron en mejoras de ${vs.map(v=>'la versión '+v.replace(/^v/,'')).join(' y de ')} del protocolo${pend?`; ${pend} quedan pendientes`:''}.`:'Sus errores aún no se han recogido en una versión del protocolo.'} La línea A solo aprende de los errores que detecta la IA; la B, también de las correcciones del autor.</p>${vs.length?`<div class="acciones" style="margin:6px 0 0">${vs.map(v=>`<button class="ir" data-ver="${v}">Qué cambió en la versión ${v.replace(/^v/,'')} →</button>`).join('')}</div>`:''}`)}
+   const i=todos.indexOf(c),ant=todos[i-1],sig=todos[i+1];
+   r+=`<div class="rnav">${ant?`<a class="ir" href="#caso/${ant}">← ${nCaso(ant)} · ${esc(nom(ant))}</a>`:'<span></span>'}${sig?`<a class="ir" href="#caso/${sig}">${nCaso(sig)} · ${esc(nom(sig))} →</a>`:''}</div>`;
+   pane('Recorrido',r)}
   const chipsL=lins.length>1?`<div class="filtros"><div class="g"><label>Propuesta</label><span id="fcL">${['',...lins].map(l=>`<button class="chip" aria-pressed="${!l}" data-v="${l}">${l||'Todas'}</button>`).join('')}</span></div></div>`:'';
   pane(`Láminas (${ps.length})`,chipsL+`<div class="grid" id="fcG">${ps.map((p,i)=>cardPlano(p,i,false).replace('<figure ',`<figure data-l="${p.l}" `)).join('')}</div>`);
-  const ids=Object.keys(f.ideas);
-  if(ids.length)pane('Idea',`<div class="ideas">${ids.map(l=>`<div><h4>${linea(l,c)}</h4><p>${esc(llano(f.ideas[l]))}</p></div>`).join('')}</div>`);
   if(R&&R.imgs.length){
     fr=R.imgs.map(i=>({src:`img/real/${i.f}.webp`,tit:`Obra original · ${nom(c)} · ${i.t}`}));
     const extra=R.fuentes.filter(u=>!R.credito.includes(u));
@@ -971,7 +1034,9 @@ function tablaCaso(c,K){
   return `<div class="sc scroll"><table class="cifras"><thead><tr><th>Propuesta</th><th>Parecido (0-5)</th><th>Fidelidad</th><th>Resultado</th></tr></thead><tbody>${filas}</tbody></table></div>`+(K.entre!=null?`<p class="nota">Parecido entre las propuestas: ${num(K.entre)} de 5.</p>`:'');
 }
 // Abre la lámina pulsada dentro de las que se ven (si hay un filtro de propuesta, solo esas).
-$('#v-caso').onclick=e=>{const f=e.target.closest('.card');if(f){const vis=$$('#fcG .card').filter(x=>!x.hidden),ls=vis.map(x=>fl[+x.dataset.i]);abre(ls.map(itemPlano),vis.indexOf(f));return}const r=e.target.closest('figure[data-r]');if(r)abre(fr,+r.dataset.r)};
+$('#v-caso').onclick=e=>{const g=e.target.closest('figure[data-g]');if(g){abre(rg[+g.dataset.g],+g.dataset.k);return}
+  const q=e.target.closest('.rq[data-e]');if(q){const x=ERRORES.find(y=>y.id===q.dataset.e);if(x)fichaError(x);return}
+  const f=e.target.closest('.card');if(f){const vis=$$('#fcG .card').filter(x=>!x.hidden),ls=vis.map(x=>fl[+x.dataset.i]);abre(ls.map(itemPlano),vis.indexOf(f));return}const r=e.target.closest('figure[data-r]');if(r)abre(fr,+r.dataset.r)};
 
 // ---------- Resumen de un caso (al pulsar un punto) ----------
 function resumenCaso(c){
@@ -1443,7 +1508,7 @@ altoCab();addEventListener('resize',altoCab);
 
 // ---------- Teclado: lo que se pulsa con el ratón también se abre con Intro o Espacio ----------
 $$('[data-pop]:not(a):not(button)').forEach(e=>e.tabIndex=0);$('#hero').tabIndex=0;
-document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-pop]:not(a):not(button),.card,.er,.it,figure[data-r],#hero')){e.preventDefault();e.target.click()}});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-pop]:not(a):not(button),.card,.er,.it,figure[data-r],figure[data-g],.rq,#hero')){e.preventDefault();e.target.click()}});
 
 // ---------- Rutas: una sección cada vez ----------
 const VISTAS=['inicio','teoria','casos','planos','evolucion','metodo','resultados','aprendizaje','caso'];
