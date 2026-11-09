@@ -76,7 +76,10 @@ h3.sec .info{margin:0}
 .pane{animation:ap .3s ease}
 /* Inicio */
 .caratula{padding:20px 0 0}
-.caratula h1{font:200 clamp(44px,9.6vw,148px)/.9 var(--serif);margin:26px 0 30px;max-width:12ch}
+/* Tres líneas fijas («de» no queda sola) y aire suficiente para la tilde de «TEORÍA» */
+.caratula h1{font:200 clamp(30px,8.4vw,132px)/1.04 var(--serif);margin:26px 0 30px}
+.caratula h1 span{display:block;white-space:nowrap}
+@media(max-width:600px){.caratula h1{font-size:10.5vw}}
 .caratula .subt{font:300 clamp(18px,2.2vw,26px)/1.4 var(--serif);color:#333;margin:0;max-width:36ch;letter-spacing:-.01em}
 .hero{margin:54px 0 0;cursor:zoom-in;border-top:1px solid var(--tx);padding-top:28px}
 .hero img{width:100%;height:auto;display:block}
@@ -376,7 +379,7 @@ footer button{font:500 13px var(--sans);color:var(--tx)}footer button:hover{text
 <main class="vista" id="v-inicio"><div class="w">
   <section class="caratula">
     <div class="k">Trabajo de Fin de Grado · Arquitectura · UPC</div>
-    <h1>Reproyectar con la teoría de <b>Campo Baeza</b></h1>
+    <h1><span>Reproyectar</span> <span>con la teoría de</span> <b>Campo Baeza</b></h1>
     <p class="subt">Diseño arquitectónico con inteligencia artificial: obras conocidas, proyectadas de nuevo con la teoría del proyecto de Alberto Campo Baeza.</p>
   </section>
   <figure class="hero" id="hero"></figure>
