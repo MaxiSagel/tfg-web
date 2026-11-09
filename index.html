@@ -16,14 +16,17 @@
 <meta property="og:url" content="https://maxisagel.github.io/tfg-web/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@300;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@200;300;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* Tipografía: Inter para el texto, Inter Tight (titulares, en mayúsculas y apretada) para lo que tiene que impactar. */
 :root{--tx:#0a0a0a;--mu:#6e6e6e;--li:#e6e6e6;--su:#f5f5f5;--sans:"Inter",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;--serif:"Inter Tight","Inter",system-ui,-apple-system,Helvetica,Arial,sans-serif}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:#fff;color:var(--tx);font:400 15.5px/1.65 var(--sans);font-feature-settings:"ss01","cv11";-webkit-font-smoothing:antialiased}
-.caratula h1,.cab h2,#v-caso h1,#pop h3{text-transform:uppercase;font-weight:600!important;letter-spacing:-.035em!important}
+.cab h2,#v-caso h1,#pop h3{text-transform:uppercase;font-weight:600!important;letter-spacing:-.035em!important}
+/* Título del inicio: el texto fino y «Campo Baeza» en negrita, para que el nombre mande */
+.caratula h1{text-transform:uppercase;font-weight:200!important;letter-spacing:-.04em!important}
+.caratula h1 b{font-weight:800;display:block;letter-spacing:-.045em}
 .fase-h h3,.cc .o,.pasos b,.agentes b,.lineas h4,.doc h4,.p-cab h3,.fr .ft,.paneles h4,h3.sec,.ideas h4{font-weight:500!important;letter-spacing:-.015em}
 .cifs b,.nums b,.doc .dn,.eres .big,.vcard b,.pop .nm b,.lineas .ln-l{font-weight:300!important;letter-spacing:-.04em}
 a{color:inherit}
@@ -73,7 +76,7 @@ h3.sec .info{margin:0}
 .pane{animation:ap .3s ease}
 /* Inicio */
 .caratula{padding:20px 0 0}
-.caratula h1{font:600 clamp(44px,9.6vw,148px)/.9 var(--serif);margin:26px 0 30px;max-width:11ch}
+.caratula h1{font:200 clamp(44px,9.6vw,148px)/.9 var(--serif);margin:26px 0 30px;max-width:12ch}
 .caratula .subt{font:300 clamp(18px,2.2vw,26px)/1.4 var(--serif);color:#333;margin:0;max-width:36ch;letter-spacing:-.01em}
 .hero{margin:54px 0 0;cursor:zoom-in;border-top:1px solid var(--tx);padding-top:28px}
 .hero img{width:100%;height:auto;display:block}
@@ -373,7 +376,7 @@ footer button{font:500 13px var(--sans);color:var(--tx)}footer button:hover{text
 <main class="vista" id="v-inicio"><div class="w">
   <section class="caratula">
     <div class="k">Trabajo de Fin de Grado · Arquitectura · UPC</div>
-    <h1>Reproyectar con la teoría de Campo Baeza</h1>
+    <h1>Reproyectar con la teoría de <b>Campo Baeza</b></h1>
     <p class="subt">Diseño arquitectónico con inteligencia artificial: obras conocidas, proyectadas de nuevo con la teoría del proyecto de Alberto Campo Baeza.</p>
   </section>
   <figure class="hero" id="hero"></figure>
@@ -582,6 +585,7 @@ const nCaso=c=>c.replace('CASO_','');
 const nom=c=>(FICHAS[c]||CASOS[c]).obra.replace(/\s*\(.*\)/,'');
 const esCB=c=>+nCaso(c)>=18;
 const linea=(l,c)=>esCB(c)?(LIN[l]||l):'Propuesta '+l;
+const cap=t=>t?String(t)[0].toUpperCase()+String(t).slice(1):t;
 const fmt=v=>String(v).replace('.',',');
 // Notas de 0 a 5: siempre con un decimal y coma («3,0», «1,9»).
 const num=v=>v==null||v===''||isNaN(+v)?(v==null?'—':String(v)):(+v).toFixed(1).replace('.',',');
@@ -660,7 +664,7 @@ $('#nums').innerHTML=[[todos.length,'casos','#casos'],[PLANOS.length,'láminas',
 const SECC={inicio:'',casos:'Casos',planos:'Planos',evolucion:'Evolución',metodo:'Método',resultados:'Resultados',aprendizaje:'Aprendizaje'};
 
 // ---------- Casos ----------
-const tarjeta=c=>{const f=FICHAS[c];return `<a class="cc" href="#caso/${c}"><div class="im"><img loading="lazy" src="img/card/${f.card||c}.webp" alt="Planta de una propuesta para ${esc(nom(c))}"></div><div class="n">${nCaso(c)}</div><div class="o">${esc(nom(c))}</div><div class="m">${esc(f.arq)} · ${f.anio} · ${esc(f.tip)}</div></a>`};
+const tarjeta=c=>{const f=FICHAS[c];return `<a class="cc" href="#caso/${c}"><div class="im"><img loading="lazy" src="img/card/${f.card||c}.webp" alt="Planta de una propuesta para ${esc(nom(c))}"></div><div class="n">${nCaso(c)}</div><div class="o">${esc(nom(c))}</div><div class="m">${esc(f.arq)} · ${f.anio} · ${esc(cap(f.tip))}</div></a>`};
 const cb=todos.filter(esCB),pil=todos.filter(c=>!esCB(c));
 $('#cgCB').innerHTML=cb.map(tarjeta).join('');$('#nCB').textContent=`${cb.length} casos · desde el 018`;
 $('#cgPil').innerHTML=pil.map(tarjeta).join('');$('#nPil').textContent=`${pil.length} casos · 001 a 017`;
@@ -670,7 +674,7 @@ const F={caso:'',l:'',t:''};let vis=[],NG=48;
 $('#fCaso').innerHTML='<option value="">Todos</option>'+todos.slice().reverse().map(c=>`<option value="${c}">${nCaso(c)} · ${esc(nom(c))}</option>`).join('');
 const tipos=[...new Set(PLANOS.map(p=>p.t))].filter(t=>t!=='otro');
 const lins=[...new Set(PLANOS.map(p=>p.l))].sort();
-const chipsF=(el,k,vals)=>{el.innerHTML=['',...vals].map(v=>`<button class="chip" aria-pressed="${F[k]===v}" data-v="${v}">${v||'Todas'}</button>`).join('')};
+const chipsF=(el,k,vals)=>{el.innerHTML=['',...vals].map(v=>`<button class="chip" aria-pressed="${F[k]===v}" data-v="${v}">${cap(v)||'Todas'}</button>`).join('')};
 const cardPlano=(p,i,conCaso)=>`<figure class="card" tabindex="0" data-i="${i}"><div class="im"><img loading="lazy" src="img/thumb/${p.id}.webp" alt="${esc(p.n)}"></div><figcaption><span class="l">${p.l}</span>${conCaso?`<b>${nCaso(p.caso)}</b> · `:''}${p.c?p.c+' · ':''}${esc(p.n)}</figcaption></figure>`;
 function pinta(){
   chipsF($('#fLinea'),'l',lins);chipsF($('#fTipo'),'t',tipos);
@@ -691,7 +695,7 @@ pinta();
 let fl=[],fr=[];
 function ficha(c){
   const f=FICHAS[c],ps=PLANOS.filter(p=>p.caso===c),R=REAL[c],t=f.tabla;
-  let h=`<a class="volver" href="#casos">← Todos los casos</a><h1>${esc(nom(c))}</h1><p class="meta">Caso ${nCaso(c)} · ${esc(f.arq)} · ${f.anio} · ${esc(f.tip)} · ${esCB(c)?'fase Campo Baeza':'fase piloto'} · hecho con la ${verM(f.protocolo)}</p>`;
+  let h=`<a class="volver" href="#casos">← Todos los casos</a><h1>${esc(nom(c))}</h1><p class="meta">Caso ${nCaso(c)} · ${esc(f.arq)} · ${f.anio} · ${esc(cap(f.tip))} · ${esCB(c)?'Fase Campo Baeza':'Fase piloto'} · Hecho con la ${verM(f.protocolo)}</p>`;
   h+=f.memorias&&f.memorias.length?`<p class="mem">Memoria completa: ${f.memorias.map(l=>`<a href="memorias/${c}_${l}.html">${linea(l,c)}</a>`).join('')}</p>`:'<div style="height:24px"></div>';
   const lins=[...new Set(ps.map(p=>p.l))];
   h+=`<div class="acciones">${lins.length>1||REAL[c]?`<a class="ir" href="#evolucion/${c}">Comparar propuestas →</a>`:''}${f.encargo_pag?`<a class="ir" href="memorias/${c}_encargo.html">Encargo completo →</a>`:''}<button class="ir" id="fImp">Imprimir la ficha</button></div>`;
@@ -726,7 +730,7 @@ function ficha(c){
   $('#fImp').onclick=()=>window.print();
 }
 function tablaCaso(c,K){
-  const filas=['A','B','C'].filter(l=>K[l.toLowerCase()]!=null).map(l=>`<tr><td>${linea(l,c)}</td><td>${num(K[l.toLowerCase()])}</td><td>${K['f'+l.toLowerCase()]!=null?K['f'+l.toLowerCase()]+' %':'—'}</td><td>${K['r'+l.toLowerCase()]||'—'}</td></tr>`).join('');
+  const filas=['A','B','C'].filter(l=>K[l.toLowerCase()]!=null).map(l=>`<tr><td>${linea(l,c)}</td><td>${num(K[l.toLowerCase()])}</td><td>${K['f'+l.toLowerCase()]!=null?K['f'+l.toLowerCase()]+' %':'—'}</td><td>${cap(K['r'+l.toLowerCase()])||'—'}</td></tr>`).join('');
   return `<div class="sc scroll"><table class="cifras"><thead><tr><th>Propuesta</th><th>Parecido (0-5)</th><th>Fidelidad</th><th>Resultado</th></tr></thead><tbody>${filas}</tbody></table></div>`+(K.entre!=null?`<p class="nota">Parecido entre las propuestas: ${num(K.entre)} de 5.</p>`:'');
 }
 // Abre la lámina pulsada dentro de las que se ven (si hay un filtro de propuesta, solo esas).
@@ -736,7 +740,7 @@ $('#v-caso').onclick=e=>{const f=e.target.closest('.card');if(f){const vis=$$('#
 function resumenCaso(c){
   const f=FICHAS[c],K=RESULTADOS.casos.find(k=>k.caso===c)||{},R=REAL[c];
   const foto=R&&R.imgs.find(i=>i.k==='vista');
-  let h=`<p class="meta2">${esc(f.arq)} · ${f.anio} · ${esc(f.tip)} · ${esCB(c)?'fase Campo Baeza':'fase piloto'}</p>`;
+  let h=`<p class="meta2">${esc(f.arq)} · ${f.anio} · ${esc(cap(f.tip))} · ${esCB(c)?'Fase Campo Baeza':'Fase piloto'}</p>`;
   h+=`<div class="dos"><div><img src="img/card/${f.card||c}.webp" alt=""><div class="nota">Planta de una de las propuestas</div></div>${foto?`<div><img src="img/real/${foto.f}.webp" alt=""><div class="nota">Obra original · ${esc(foto.t)}</div></div>`:''}</div>`;
   h+=tablaCaso(c,K);
   const ids=Object.keys(f.ideas);
@@ -818,17 +822,17 @@ function resultados(){
     tip.style.left=Math.min(e.clientX+12,innerWidth-tip.offsetWidth-8)+'px';tip.style.top=(e.clientY+14)+'px'};
   ['#rSim','#rCrit'].forEach(id=>{const el=$(id);el.addEventListener('mousemove',mueveTip);el.addEventListener('mouseleave',()=>tip.hidden=true)});
   $('#rCrit').addEventListener('click',mueveTip);
-  $('#rTabla').innerHTML=`<table><thead><tr><th>Caso</th><th>Obra</th><th>A</th><th>B</th><th>C</th><th>Entre propuestas</th><th>Fid. A</th><th>Fid. B</th><th>Resultado A</th><th>Resultado B</th></tr></thead><tbody>${K.map(c=>`<tr><td>${nCaso(c.caso)}</td><td>${esc(nom(c.caso))}</td>${['a','b','c','entre'].map(k=>`<td>${num(c[k])}</td>`).join('')}<td>${c.fa==null?'—':c.fa+' %'}</td><td>${c.fb==null?'—':c.fb+' %'}</td><td>${c.ra||'—'}</td><td>${c.rb||'—'}</td></tr>`).join('')}</tbody></table><p class="nota">Parecido con la obra real de 0 a 5; fidelidad a la teoría en porcentaje.</p>`;
+  $('#rTabla').innerHTML=`<table><thead><tr><th>Caso</th><th>Obra</th><th>A</th><th>B</th><th>C</th><th>Entre propuestas</th><th>Fid. A</th><th>Fid. B</th><th>Resultado A</th><th>Resultado B</th></tr></thead><tbody>${K.map(c=>`<tr><td>${nCaso(c.caso)}</td><td>${esc(nom(c.caso))}</td>${['a','b','c','entre'].map(k=>`<td>${num(c[k])}</td>`).join('')}<td>${c.fa==null?'—':c.fa+' %'}</td><td>${c.fb==null?'—':c.fb+' %'}</td><td>${cap(c.ra)||'—'}</td><td>${cap(c.rb)||'—'}</td></tr>`).join('')}</tbody></table><p class="nota">Parecido con la obra real de 0 a 5; fidelidad a la teoría en porcentaje.</p>`;
 }
 document.addEventListener('click',e=>{if(!e.target.closest('#rSim,#rCrit'))$('#rTip').hidden=true});
 
 // ---------- Aprendizaje ----------
-const CAT={grafico:'dibujo',programa:'programa',coherencia:'coherencia',arquitectonico:'arquitectura',modelado:'modelado',concepto:'concepto',normativa:'normativa',tecnico:'técnica',eficiencia:'eficiencia'};
+const CAT={grafico:'Dibujo',programa:'Programa',coherencia:'Coherencia',arquitectonico:'Arquitectura',modelado:'Modelado',concepto:'Concepto',normativa:'Normativa',tecnico:'Técnica',eficiencia:'Eficiencia'};
 const FASE={f0:'La idea',f1:'Plantas y sección',f2:'Verificación',fV:'Verificación final',cierre:'Cierre del caso'};
 const DET={usuario:'el usuario',disenador:'el diseñador','revisor-tecnico':'el revisor técnico',critico:'el crítico'};
-const VER={error:'error',decision_teorica:'decisión justificada',dudoso:'dudoso'};
+const VER={error:'Error',decision_teorica:'Decisión justificada',dudoso:'Dudoso'};
 const VERX={error:'Es un error: algo que estaba mal y había que corregir.',decision_teorica:'No se considera un error sino una decisión justificada por la teoría, así que no se convierte en lección.',dudoso:'Quedó como dudoso: el auditor debía decidir si era un error o una decisión.'};
-const ORI={IA:'IA',humano:'usuario'};
+const ORI={IA:'IA',humano:'Usuario'};
 let iniErr=false,errCaso=()=>{};
 function errores(caso){
   if(iniErr){errCaso(caso);return}iniErr=true;
@@ -843,19 +847,19 @@ function errores(caso){
   const cat=cuenta('c'),gr=cuenta('g');
   const barras=(obj,k,tx,orden,cl)=>{const mx=Math.max(...orden.map(x=>obj[x]||0));return orden.filter(x=>obj[x]).map(x=>`<button class="bar ${cl?cl+x:''}" data-k="${k}" data-v="${x}"><span>${tx(x)}</span><span><i style="width:${obj[x]/mx*100}%"></i></span><span>${obj[x]}</span></button>`).join('')};
   $('#eRes').innerHTML=`<div><h4>Registrados</h4><div class="big">${E.length}<small>errores</small></div><div class="ln"><b>A · solo IA:</b> ${a.length}, todos detectados por la IA.</div><div class="ln"><b>B · híbrida:</b> ${b.length}: ${b.length-hum} de la IA y ${hum} del usuario.</div><div class="ln">${rec} de ${E.length} ya recogidos en una versión del protocolo.</div></div>
-    <div><h4>Por categoría</h4>${barras(cat,'c',x=>CAT[x]||x,Object.keys(cat).sort((p,q)=>cat[q]-cat[p]))}</div><div><h4>Por gravedad</h4>${barras(gr,'g',x=>x,['grave','media','leve'],'g-')}<p class="nota" style="margin-top:22px">El número de errores no mide la calidad de una línea: B recoge además los comentarios del usuario.</p></div>`;
+    <div><h4>Por categoría</h4>${barras(cat,'c',x=>CAT[x]||x,Object.keys(cat).sort((p,q)=>cat[q]-cat[p]))}</div><div><h4>Por gravedad</h4>${barras(gr,'g',cap,['grave','media','leve'],'g-')}<p class="nota" style="margin-top:22px">El número de errores no mide la calidad de una línea: B recoge además los comentarios del usuario.</p></div>`;
   function lista(){
     const q=S.q.trim().toLowerCase();
     fE=E.filter(e=>(!S.l||e.l===S.l)&&(!S.o||e.o===S.o)&&(!S.g||e.g===S.g)&&(!S.c||e.c===S.c)&&(!S.caso||e.caso===S.caso)&&(!S.f||e.f===S.f)&&(!q||e.txt.toLowerCase().includes(q)||e.id.toLowerCase()===q));
-    $('#eLista').innerHTML=fE.slice(0,N).map((e,i)=>`<div class="er" tabindex="0" data-i="${i}"><span class="mas"></span><div class="eh"><b>${e.id}</b><span class="tg">Caso ${nCaso(e.caso)} · ${e.l}</span><span class="tg">${ORI[e.o]||e.o}</span><span class="tg ${e.g}">${e.g}</span><span>${CAT[e.c]||e.c}</span>${e.v!=='error'?`<span class="tg">${VER[e.v]||e.v}</span>`:''}</div><p>${esc(llano(e.txt))}</p><div class="efo">${FASE[e.f]||e.f} · lo vio ${DET[e.d]||e.d}${e.vr?' · recogido en la versión '+e.vr.replace(/^v/,''):''}</div></div>`).join('')||'<div class="vacio">Ningún error con esos filtros.</div>';
+    $('#eLista').innerHTML=fE.slice(0,N).map((e,i)=>`<div class="er" tabindex="0" data-i="${i}"><span class="mas"></span><div class="eh"><b>${e.id}</b><span class="tg">Caso ${nCaso(e.caso)} · ${e.l}</span><span class="tg">${ORI[e.o]||e.o}</span><span class="tg ${e.g}">${cap(e.g)}</span><span>${CAT[e.c]||cap(e.c)}</span>${e.v!=='error'?`<span class="tg">${VER[e.v]||e.v}</span>`:''}</div><p>${esc(llano(e.txt))}</p><div class="efo">${FASE[e.f]||e.f} · Lo vio ${DET[e.d]||e.d}${e.vr?' · Recogido en la versión '+e.vr.replace(/^v/,''):''}</div></div>`).join('')||'<div class="vacio">Ningún error con esos filtros.</div>';
     $('#eCuenta').textContent=fE.length+(fE.length===1?' error':' errores');$('#eMas').hidden=fE.length<=N;$('#eMas').textContent='Mostrar más ('+Math.min(40,fE.length-N)+')';
-    chips($('#eL'),'l',['A','B'],v=>v);chips($('#eO'),'o',['IA','humano'],v=>ORI[v]);chips($('#eG'),'g',['grave','media','leve'],v=>v);
+    chips($('#eL'),'l',['A','B'],v=>v);chips($('#eO'),'o',['IA','humano'],v=>ORI[v]);chips($('#eG'),'g',['grave','media','leve'],cap);
     $$('#eRes .bar').forEach(x=>x.setAttribute('aria-pressed',S[x.dataset.k]===x.dataset.v));$('#eC').value=S.c;$('#eCaso').value=S.caso;btnF();
   }
   // Desde la ficha de un caso (#aprendizaje/CASO_020) se llega con el filtro de ese caso puesto.
   errCaso=c=>{if(c===undefined)return;S.caso=c||'';N=40;lista()};
   sel($('#eC'),'c',Object.keys(cat).sort(),v=>CAT[v]||v);
-  sel($('#eCaso'),'caso',[...new Set(E.map(e=>e.caso))].sort(),v=>'caso '+nCaso(v));
+  sel($('#eCaso'),'caso',[...new Set(E.map(e=>e.caso))].sort(),v=>'Caso '+nCaso(v));
   sel($('#eF'),'f',['f0','f1','f2','fV','cierre'].filter(f=>E.some(e=>e.f===f)),v=>FASE[v]);
   ['eL','eO','eG'].forEach((id,i)=>{$('#'+id).onclick=ev=>{if(ev.target.dataset.v!==undefined){S[['l','o','g'][i]]=ev.target.dataset.v;N=40;lista()}}});
   $('#eC').onchange=ev=>{S.c=ev.target.value;N=40;lista()};$('#eCaso').onchange=ev=>{S.caso=ev.target.value;N=40;lista()};$('#eF').onchange=ev=>{S.f=ev.target.value;N=40;lista()};
@@ -867,7 +871,7 @@ function errores(caso){
   lista();
 }
 function fichaError(e){
-  let h=`<p class="meta2"><span class="tg">Caso ${nCaso(e.caso)} · ${esc(nom(e.caso))}</span> <span class="tg">propuesta ${e.l}</span> <span class="tg ${e.g}">${e.g}</span> <span class="tg">${CAT[e.c]||e.c}</span></p>`;
+  let h=`<p class="meta2"><span class="tg">Caso ${nCaso(e.caso)} · ${esc(nom(e.caso))}</span> <span class="tg">Propuesta ${e.l}</span> <span class="tg ${e.g}">${cap(e.g)}</span> <span class="tg">${CAT[e.c]||e.c}</span></p>`;
   h+=`<p style="font-size:20px;line-height:1.45">${esc(llano(e.txt))}</p>`;
   h+=`<div class="venove"><div><b>Cuándo y quién</b><p>${FASE[e.f]||e.f}. Lo vio ${DET[e.d]||e.d}; origen: ${e.o==='humano'?'el usuario':'la IA'}.</p></div><div><b>Veredicto</b><p>${VERX[e.v]||e.v}</p></div></div>`;
   if(e.lam.length){h+=`<h4>Lámina a la que se refiere</h4>`+e.lam.map(i=>{const p=porId[i];return p?`<figure class="pl" data-id="${i}"><img src="img/thumb/${i}.webp" alt=""><figcaption>${p.c?p.c+' · ':''}${esc(p.n)} · lámina final · pulsa para ampliar</figcaption></figure>`:''}).join('')}
