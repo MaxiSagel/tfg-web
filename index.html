@@ -230,7 +230,13 @@ circle.h{fill:transparent;cursor:pointer}
 .paneles h4{margin:0 0 6px;font:400 19px var(--serif)}
 #rTabla table{border-collapse:collapse;font:13px var(--sans);min-width:100%}
 #rTabla th{text-align:left;font-weight:500;color:var(--mu);font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--tx);padding:8px 16px 8px 0;white-space:nowrap}
-#rTabla td{border-bottom:1px solid var(--li);padding:9px 16px 9px 0;white-space:nowrap}
+#rTabla td{border-bottom:1px solid var(--li);padding:10px 14px 10px 0;white-space:nowrap;vertical-align:top}
+#rTabla tr.g th{border-bottom:1px solid var(--li);padding-bottom:6px;white-space:normal;vertical-align:bottom;line-height:1.35}
+#rTabla .sep{padding-left:14px;border-left:1px solid var(--li)}
+#rTabla td.ob{white-space:normal;min-width:110px}#rTabla td.ob span{display:block;color:var(--mu);font-size:12px;line-height:1.35;margin-top:2px}
+#rTabla tr.med td{border-top:1px solid var(--tx);border-bottom:0}
+#rTabla .nota b{color:var(--tx);font-weight:500}
+@media(max-width:560px){#rTabla table{font-size:12.5px}#rTabla th,#rTabla td{padding-right:9px}#rTabla .sep{padding-left:9px}#rTabla td.ob{min-width:0;width:34%}#rTabla th{letter-spacing:.04em}}
 .p-cab{display:flex;align-items:center;gap:12px;margin:0 0 18px}
 .p-cab h3{font:400 24px var(--serif);margin:0}
 /* Aprendizaje */
@@ -829,7 +835,15 @@ function resultados(){
     tip.style.left=Math.min(e.clientX+12,innerWidth-tip.offsetWidth-8)+'px';tip.style.top=(e.clientY+14)+'px'};
   ['#rSim','#rCrit'].forEach(id=>{const el=$(id);el.addEventListener('mousemove',mueveTip);el.addEventListener('mouseleave',()=>tip.hidden=true)});
   $('#rCrit').addEventListener('click',mueveTip);
-  $('#rTabla').innerHTML=`<table><thead><tr><th>Caso</th><th>Obra</th><th>A</th><th>B</th><th>C</th><th>Entre propuestas</th><th>Fid. A</th><th>Fid. B</th><th>Resultado A</th><th>Resultado B</th></tr></thead><tbody>${K.map(c=>`<tr><td>${nCaso(c.caso)}</td><td>${esc(nom(c.caso))}</td>${['a','b','c','entre'].map(k=>`<td>${num(c[k])}</td>`).join('')}<td>${c.fa==null?'—':c.fa+' %'}</td><td>${c.fb==null?'—':c.fb+' %'}</td><td>${cap(c.ra)||'—'}</td><td>${cap(c.rb)||'—'}</td></tr>`).join('')}</tbody></table><p class="nota">Parecido con la obra real de 0 a 5; fidelidad a la teoría en porcentaje.</p>`;
+  {const T=K.filter(c=>esCB(c.caso)&&(c.fa!=null||c.fb!=null));
+   const med=k=>{const v=T.map(c=>c[k]).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+ +b,0)/v.length:null};
+   const pc=(v,d)=>v==null?'—':(d?num(v):Math.round(v));
+   const dif=(a,b,d)=>{if(a==null||b==null)return '—';const x=a-b;if(Math.abs(x)<.05)return 'Empate';const n=d?num(Math.abs(x)):Math.round(Math.abs(x));return `<b>${x>0?'A':'B'} +${n}</b>`};
+   const fila=(c,ma)=>`<tr${ma?' class="med"':''}><td class="ob">${ma?'<b>Media</b>':`<b>${nCaso(c.caso)}</b><span>${esc(nom(c.caso))}${c.estado==='en curso'?' · en curso':''}</span>`}</td><td>${pc(c.fa,ma)}</td><td>${pc(c.fb,ma)}</td><td class="di">${dif(c.fa,c.fb,ma)}</td><td class="sep">${num(c.a)}</td><td>${num(c.b)}</td></tr>`;
+   const R=[...T.map(c=>c.ra),...T.map(c=>c.rb)].filter(Boolean),cnt={};R.forEach(r=>cnt[r]=(cnt[r]||0)+1);
+   const clas=Object.keys(cnt).length===1?`Todas las propuestas se clasificaron como <b>${esc(Object.keys(cnt)[0])}</b> de la obra original, ninguna como copia.`:'Clasificación frente a la obra original: '+Object.entries(cnt).map(([k,v])=>`${esc(k)} (${v})`).join(', ')+'.';
+   $('#rTabla').innerHTML=`<table><thead><tr class="g"><th></th><th colspan="3">Fidelidad a la teoría (%)</th><th colspan="2" class="sep">Parecido con la obra (0-5)</th></tr><tr><th>Caso</th><th>A</th><th>B</th><th>Gana</th><th class="sep">A</th><th>B</th></tr></thead><tbody>${T.map(c=>fila(c)).join('')}${fila({fa:med('fa'),fb:med('fb'),a:med('a'),b:med('b')},1)}</tbody></table>
+   <p class="nota">Solo los casos de la fase Campo Baeza (desde el 018), los únicos en que A y B son las dos líneas de aprendizaje. <b>A</b> solo aprende de la IA; <b>B</b>, también de las correcciones del autor. La fidelidad es el porcentaje de la rúbrica de trece criterios; la columna «Gana» indica, en puntos, qué línea se acerca más a la teoría. El parecido con la obra real se puntúa a ciegas de 0 a 5: más bajo significa que se aleja más del original. ${clas}</p>`;}
 }
 document.addEventListener('click',e=>{if(!e.target.closest('#rSim,#rCrit'))$('#rTip').hidden=true});
 
