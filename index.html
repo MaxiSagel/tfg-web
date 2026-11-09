@@ -247,8 +247,8 @@ circle.h{fill:transparent;cursor:pointer}
 .tira .it img{max-width:100%;max-height:100%}
 .tira .it figcaption{font:12px/1.45 var(--sans);color:var(--mu);margin-top:9px}
 .tira .it figcaption b{color:var(--tx);font-weight:600}
-.tira .sep{flex:0 0 1px;background:var(--tx);margin:0 4px;position:relative}
-.tira .sep span{position:absolute;top:-2px;left:10px;font:600 10.5px var(--sans);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.tira .sep{flex:0 0 22px;border-left:1px solid var(--tx);margin:0 2px 0 6px;display:flex;align-items:flex-start;padding:2px 0 0 6px}
+.tira .sep span{writing-mode:vertical-rl;font:600 10px var(--sans);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
 /* Visor */
 #lb{position:fixed;inset:0;background:#fff;z-index:80;display:none;flex-direction:column}
 #lb.on{display:flex}
@@ -308,7 +308,7 @@ circle.h{fill:transparent;cursor:pointer}
 :focus-visible{outline:1.5px solid var(--tx);outline-offset:3px}
 footer{border-top:1px solid var(--li);padding:30px 0 50px;color:var(--mu);font:12.5px/1.6 var(--sans)}
 footer .w{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}
-footer a{text-decoration:none;color:var(--tx)}
+footer button{font:500 13px var(--sans);color:var(--tx)}footer button:hover{text-decoration:underline;text-underline-offset:4px}
 </style>
 </head>
 <body>
@@ -499,7 +499,7 @@ footer a{text-decoration:none;color:var(--tx)}
 <!-- FICHA DE CASO -->
 <main class="vista" id="v-caso" hidden><div class="w"></div></main>
 
-<footer><div class="w"><span>Los casos se añaden a la web conforme se cierran. Las imágenes de las obras originales se reproducen con fines de cita académica; los derechos son de sus autores y cada una indica su fuente.</span><a href="#inicio">Volver al inicio ↑</a></div></footer>
+<footer><div class="w"><span>Los casos se añaden a la web conforme se cierran. Las imágenes de las obras originales se reproducen con fines de cita académica; los derechos son de sus autores y cada una indica su fuente.</span><button id="arriba">Volver arriba ↑</button></div></footer>
 
 <div id="lb" role="dialog" aria-modal="true">
   <div class="bar2"><span id="lbT"></span><div class="acc"><a class="ibtn" id="lbPdf" target="_blank" rel="noopener" download aria-label="Descargar el PDF" title="Descargar el PDF"><svg class="ic"><use href="#i-dl"/></svg></a><button class="ibtn" id="lbX" aria-label="Cerrar" title="Cerrar"><svg class="ic"><use href="#i-x"/></svg></button></div></div>
@@ -595,14 +595,14 @@ $('#cgPil').innerHTML=pil.map(tarjeta).join('');$('#nPil').textContent=`${pil.le
 
 // ---------- Planos ----------
 const F={caso:'',l:'',t:''};let vis=[];
-$('#fCaso').innerHTML='<option value="">Todos</option>'+todos.map(c=>`<option value="${c}">${nCaso(c)} · ${esc(nom(c))}</option>`).join('');
+$('#fCaso').innerHTML='<option value="">Todos</option>'+todos.slice().reverse().map(c=>`<option value="${c}">${nCaso(c)} · ${esc(nom(c))}</option>`).join('');
 const tipos=[...new Set(PLANOS.map(p=>p.t))].filter(t=>t!=='otro');
 const lins=[...new Set(PLANOS.map(p=>p.l))].sort();
 const chipsF=(el,k,vals)=>{el.innerHTML=['',...vals].map(v=>`<button class="chip" aria-pressed="${F[k]===v}" data-v="${v}">${v||'Todas'}</button>`).join('')};
 const cardPlano=(p,i,conCaso)=>`<figure class="card" tabindex="0" data-i="${i}"><div class="im"><img loading="lazy" src="img/thumb/${p.id}.webp" alt="${esc(p.n)}"></div><figcaption><span class="l">${p.l}</span>${conCaso?`<b>${nCaso(p.caso)}</b> · `:''}${p.c?p.c+' · ':''}${esc(p.n)}</figcaption></figure>`;
 function pinta(){
   chipsF($('#fLinea'),'l',lins);chipsF($('#fTipo'),'t',tipos);
-  vis=PLANOS.filter(p=>(!F.caso||p.caso===F.caso)&&(!F.l||p.l===F.l)&&(!F.t||p.t===F.t));
+  vis=PLANOS.filter(p=>(!F.caso||p.caso===F.caso)&&(!F.l||p.l===F.l)&&(!F.t||p.t===F.t)).map((p,i)=>[p,i]).sort((a,b)=>b[0].caso.localeCompare(a[0].caso)||a[1]-b[1]).map(x=>x[0]);
   $('#grid').innerHTML=vis.map((p,i)=>cardPlano(p,i,true)).join('');
   $('#cuenta').textContent=vis.length+' láminas';$('#vacio').hidden=vis.length>0;
 }
@@ -792,15 +792,19 @@ function evolucion(){
     return out.sort((a,b)=>PLANOS.indexOf(a[0])-PLANOS.indexOf(b[0]));
   }
   const lineasDe=c=>[...new Set(PLANOS.filter(p=>p.caso===c).map(p=>p.l))].sort();
-  const combos=c=>{const L=lineasDe(c),o=[];for(let i=0;i<L.length;i++)for(let j=i+1;j<L.length;j++)o.push([L[i],L[j]]);return o};
+  const KR={'planta':'planta','sección/alzado':'sección','vista':'vista'};
+  const realDe=(c,t)=>{const R=REAL[c];const i=R&&R.imgs.find(x=>x.k===KR[t]);return i?{l:'Real',real:i.f,n:'Obra original · '+i.t,t}:null};
+  const combos=c=>{const L=lineasDe(c),o=[];for(let i=0;i<L.length;i++)for(let j=i+1;j<L.length;j++)o.push([L[i],L[j]]);
+    if(REAL[c]&&REAL[c].imgs.length)L.forEach(l=>o.push([l,'R']));return o};
   const casosCmp=todos.filter(c=>combos(c).length);
   const opts=(el,vals)=>{el.innerHTML=vals.map(([v,t])=>`<option value="${v}">${esc(t)}</option>`).join('')};
   const cm=$('#cmp'),sl=$('#cmpS');let par=null,actual=null;
   opts($('#cCaso'),casosCmp.slice().reverse().map(c=>[c,nCaso(c)+' · '+nom(c)]));
   $('#cCaso').value=casosCmp[casosCmp.length-1];
-  function onCaso(){const cb=combos($('#cCaso').value);opts($('#cLin'),cb.map(([a,b])=>[a+b,a+' frente a '+b]));onLin()}
-  function onLin(){const c=$('#cCaso').value,v=$('#cLin').value;par=pares(c,v[0],v[1]);
-    opts($('#cPar'),par.map(([p,q],i)=>[i,(p.c||q.c?(p.c||q.c)+' · ':'')+p.n+(p.esc&&q.esc?'':' (sin escala)')]));onPar()}
+  function onCaso(){const cb=combos($('#cCaso').value);opts($('#cLin'),cb.map(([a,b])=>[a+b,a+(b==='R'?' frente a la obra real':' frente a '+b)]));onLin()}
+  function onLin(){const c=$('#cCaso').value,v=$('#cLin').value;
+    par=v[1]==='R'?PLANOS.filter(p=>p.caso===c&&p.l===v[0]&&KR[p.t]).map(p=>[p,realDe(c,p.t)]).filter(x=>x[1]):pares(c,v[0],v[1]);
+    opts($('#cPar'),par.map(([p,q],i)=>[i,(p.c?p.c+' · ':'')+p.n+(q.real?'  ↔  '+q.n.replace('Obra original · ','real: '):'')]));onPar()}
   const geo=p=>{const ok=p.esc&&p.pw&&p.ph,W=ok?p.pw*p.esc/1000:1,H=ok?p.ph*p.esc/1000:(p.ph&&p.pw?p.ph/p.pw:0.707),bb=p.bb||[0,0,1,1];
     return {ok,W,H,bb,cw:(bb[2]-bb[0])*W,ch:(bb[3]-bb[1])*H,cx:(bb[0]+bb[2])/2*W,cy:(bb[1]+bb[3])/2*H}};
   // Las dos láminas se muestran al MISMO TAMAÑO: el dibujo de cada una se ajusta al recuadro, aunque estén a escalas distintas.
@@ -810,11 +814,12 @@ function evolucion(){
     let Ch=Cw/ratio;if(Ch>maxH)Ch=maxH;cm.style.height=Ch+'px';
     const pon=(img,g)=>{const s=Math.min(Cw/(g.cw*1.08),Ch/(g.ch*1.08));img.style.width=g.W*s+'px';img.style.height=g.H*s+'px';img.style.left=(Cw/2-g.cx*s)+'px';img.style.top=(Ch/2-g.cy*s)+'px'};
     pon($('#cmpL'),a);pon($('#cmpR'),b);$('#cmpE').hidden=true;
-    const e1=p.esc?`1:${p.esc}`:'sin escala',e2=q.esc?`1:${q.esc}`:'sin escala';
+    const e1=p.esc?`1:${p.esc}`:'sin escala',e2=q.real?'imagen de la obra':q.esc?`1:${q.esc}`:'sin escala';
     $('#cmpCap').innerHTML=`<b>${p.l}</b> · ${p.c?p.c+' · ':''}${esc(p.n)} (${e1}) &nbsp;|&nbsp; <b>${q.l}</b> · ${q.c?q.c+' · ':''}${esc(q.n)} (${e2}). Las dos se muestran al mismo tamaño, aunque estén dibujadas a escalas distintas. Arrastra para comparar.`;
   }
   function onPar(){const i=+$('#cPar').value;if(!par||!par[i]){cm.hidden=true;$('#cmpCap').textContent='No hay láminas equivalentes entre esas dos propuestas.';return}
-    cm.hidden=false;actual=par[i];$('#cmpL').src='img/full/'+actual[0].id+'.webp';$('#cmpR').src='img/full/'+actual[1].id+'.webp';
+    cm.hidden=false;actual=par[i];$('#cmpL').src='img/full/'+actual[0].id+'.webp';
+    const q=actual[1];if(q.real){$('#cmpR').onload=function(){q.pw=this.naturalWidth;q.ph=this.naturalHeight;dibuja()};$('#cmpR').src='img/real/'+q.real+'.webp'}else{$('#cmpR').onload=null;$('#cmpR').src='img/full/'+q.id+'.webp'}
     $('#cmpLa').textContent=actual[0].l;$('#cmpRb').textContent=actual[1].l;dibuja();ponPos(50)}
   function ponPos(v){sl.value=v;$('#capL').style.clipPath=`inset(0 ${100-v}% 0 0)`;$('#cmpH').style.left=v+'%'}
   sl.oninput=()=>ponPos(+sl.value);
@@ -872,6 +877,7 @@ function ruta(){
   window.scrollTo(0,0);
 }
 addEventListener('hashchange',ruta);
+$('#arriba').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
 // Un enlace a la sección en la que ya estás (p. ej. «Volver al inicio» desde el inicio) no cambia el hash: sube arriba igualmente.
 document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a||e.defaultPrevented)return;
   const h=a.getAttribute('href');if(h.length<2)return;
