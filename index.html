@@ -657,7 +657,9 @@ html[data-tema=oscuro] .cmp .lupa,html[data-tema=oscuro] #pop .caja{box-shadow:n
 .pop .dice{font:300 19px/1.5 var(--sans);margin:0 0 20px}
 .pop .tags{display:flex;flex-wrap:wrap;gap:6px;margin:-6px 0 18px}
 .pop .ejs{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-top:12px}
-.pop .ejs figure.pl{margin:0}.pop .ejs figure.pl img{max-height:150px;width:100%;object-fit:contain;background:#fff}
+.pop .ejs figure.pl{margin:0}.pop .ejs figure.pl img{height:120px;width:100%;object-fit:contain;background:#fff;border:1px solid var(--li)}
+.pop .ejs{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px 12px}.pop .ejs figcaption{font-size:12.5px;margin-top:4px}
+@media(max-width:600px){.pop .ejs{grid-template-columns:1fr 1fr}.pop .ejs figure.pl img{height:96px}}
 .pop details{margin-top:22px;font-size:13.5px}
 .pop summary{cursor:pointer;font:500 13px var(--sans);text-decoration:underline;text-underline-offset:4px;text-decoration-color:#b5b5b5;list-style:none}
 .pop summary::-webkit-details-marker{display:none}
@@ -1847,11 +1849,13 @@ function abreCrit(id){
   const k=(TEORIA.criterios||[]).find(x=>x.id===id);if(!k)return;const w=pesoCrit()[id],q=cuentaCrit(id);
   const ev=(TEORIA.evid[id]||[]).slice().sort((a,b)=>b.caso.localeCompare(a.caso)||a.l.localeCompare(b.l));
   const lam=e=>e.cods.map(cd=>PLANOS.find(p=>p.caso===e.caso&&p.l===e.l&&p.c===cd)).filter(Boolean);
-  const ejs=ev.filter(e=>e.n===2).map(e=>({e,p:lam(e)[0]})).filter(x=>x.p).slice(0,3);
+  // Todas las propuestas que lo cumplen (no solo unas pocas), cada una con la lámina que citó el evaluador.
+  const cum=ev.filter(e=>e.n===2).map(e=>({e,p:lam(e)[0]})),ejs=cum.filter(x=>x.p),sinL=cum.filter(x=>!x.p);
   let h=`<p class="meta2">${pesoTx(w)}${k.nota?' · '+esc(k.nota):''}</p><p class="dice">${esc(k.dice)}</p>`;
   h+=`<div class="venove"><div><b>Se ve en el dibujo si…</b><p>${esc(cap(k.ve))}.</p></div><div><b>Falla si…</b><p>${esc(cap(k.no))}.</p></div></div>`;
   h+=`<h4>Qué propuestas lo cumplen</h4>${barra3(q)}<p style="margin-top:10px">${frase3(q)}</p>`;
-  if(ejs.length)h+=`<div class="ejs">${ejs.map(({e,p})=>`<figure class="pl" data-id="${p.id}"><img loading="lazy" src="img/thumb/${p.id}.webp" alt="${esc(p.n)}"><figcaption><b>${nCaso(e.caso)} · ${esc(linea(e.l,e.caso))}</b> · ${p.c} · pulsa para ampliar</figcaption></figure>`).join('')}</div>`;
+  if(ejs.length)h+=`<p class="nota" style="margin:16px 0 10px">${ejs.length===q.n2?'Todas, con':'Las que citan'} la lámina donde se ve. Pulsa una para ampliarla.</p><div class="ejs">${ejs.map(({e,p})=>`<figure class="pl" data-id="${p.id}"><img loading="lazy" src="img/mini/${p.id}.webp" alt="${esc(p.n)}"><figcaption><b>${nCaso(e.caso)} · ${e.l}</b> · ${p.c}</figcaption></figure>`).join('')}</div>`;
+  if(sinL.length)h+=`<p class="nota" style="margin-top:10px">Sin lámina citada: ${listaY(sinL.map(({e})=>`${nCaso(e.caso)} · ${e.l}`))}.</p>`;
   if(ev.length)h+=`<details><summary>Lo que dijo el evaluador de cada propuesta (${ev.length})</summary><ul class="com">${ev.map(e=>`<li><b>${nCaso(e.caso)} · ${e.l}</b> — ${e.n==null?'no procede':e.n+' de 2'}: ${esc(llano(e.txt))}</li>`).join('')}</ul></details>`;
   h+=`<p class="nota" style="margin-top:20px">Fuente: ${esc(k.fuente)}.</p>`;
   abrePop(`${k.id} · ${k.nombre}`,h)}
