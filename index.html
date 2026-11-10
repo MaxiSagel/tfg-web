@@ -108,11 +108,11 @@ h3.sec .info{margin:0}
 .hero img{width:100%;height:auto;display:block}
 .hero figcaption{font:12px/1.4 var(--sans);color:var(--mu);margin:0}
 .hero{min-width:0}
-/* Portada. Ordenador: la carátula con su alto natural y, justo debajo, el dibujo grande a todo el ancho (empieza en la
-   primera pantalla y se ve entero al bajar). Móvil: carátula y dibujo llenan juntos la primera pantalla. */
+/* Portada. Ordenador: la carátula llena exactamente la primera pantalla y el dibujo, grande y entero, empieza justo
+   debajo, de modo que nunca asoma cortado: aparece al bajar. Móvil: carátula y dibujo llenan juntos la primera pantalla. */
 .primera{display:contents}
 @media(min-width:821px){
-  .caratula{min-height:0;padding:12px 0 34px}
+  .caratula{min-height:calc(100vh - var(--hh,60px) - 60px);min-height:calc(100svh - var(--hh,60px) - 60px);padding:0 0 34px}
   .caratula h1{font-size:clamp(28px,min(7.6vw,10.5svh),120px);margin:18px 0 22px}
   .caratula .autor{margin-top:18px}}
 @media(max-width:820px){
@@ -364,6 +364,7 @@ circle.h{fill:transparent;cursor:pointer}
 @keyframes fd{from{opacity:0}to{opacity:1}}
 #pop .caja{background:#fff;max-width:780px;margin:0 auto;border:1px solid var(--tx);padding:38px 44px 42px;position:relative;animation:ap .3s ease}
 #pop .cerrar{position:absolute;top:12px;right:12px}
+#pop.sint #popC>:first-child{margin-top:0;padding-right:34px}
 #pop h3{font:600 30px/1 var(--serif);margin:0 44px 24px 0}
 .pop p{margin:0 0 14px}
 .pop .ej{border-top:1px solid var(--tx);padding:18px 0 4px;margin:28px 0 8px;font-size:15px}
@@ -655,7 +656,9 @@ html[data-tema=oscuro] .cmp .lupa,html[data-tema=oscuro] #pop .caja{box-shadow:n
 .pop .dice{font:300 19px/1.5 var(--sans);margin:0 0 20px}
 .pop .tags{display:flex;flex-wrap:wrap;gap:6px;margin:-6px 0 18px}
 .pop .ejs{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-top:12px}
-.pop .ejs figure.pl{margin:0}.pop .ejs figure.pl img{height:120px;width:100%;object-fit:contain;background:#fff;border:1px solid var(--li)}
+.pop .ejs figure.pl{margin:0}
+.pop .ejs a.pmem{display:block;text-decoration:none;color:inherit}.pop .ejs .mimg{display:flex;align-items:center;justify-content:center;height:120px;border:1px solid var(--li);font:500 15px var(--sans);text-decoration:underline;text-underline-offset:4px}.pop .ejs .fc{display:block;font-size:12.5px;margin-top:4px}
+@media(max-width:600px){.pop .ejs .mimg{height:96px}}.pop .ejs figure.pl img{height:120px;width:100%;object-fit:contain;background:#fff;border:1px solid var(--li)}
 .pop .ejs{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px 12px}.pop .ejs figcaption{font-size:12.5px;margin-top:4px}
 @media(max-width:600px){.pop .ejs{grid-template-columns:1fr 1fr}.pop .ejs figure.pl img{height:96px}}
 .pop details{margin-top:22px;font-size:13.5px}
@@ -1083,6 +1086,16 @@ function conTip(el){const mv=e=>{const t=e.target.closest&&e.target.closest('[da
   TIP.style.left=Math.min(e.clientX+12,innerWidth-TIP.offsetWidth-8)+'px';TIP.style.top=(e.clientY+14)+'px'};
   el.classList.add('gtip');el.addEventListener('mousemove',mv);el.addEventListener('mouseleave',()=>TIP.hidden=true)}
 // Los gráficos se animan la primera vez que entran en pantalla (barras que crecen, puntos que aparecen).
+// Contador: el número sube de 0 a su valor cuando se ve por primera vez (salvo si el sistema pide menos movimiento).
+// Hasta entonces el número está invisible; si el observador no avisara, una comprobación cada segundo lo arranca al
+// verse en pantalla, así que nunca se queda en 0.
+const QUIETO=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const arranca=el=>{if(el.dataset.ya)return;el.dataset.ya=1;const n=+el.dataset.n,t0=performance.now(),D=1400;el.textContent='0';el.style.opacity='';
+  const it=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/D);el.textContent=Math.round(n*(1-Math.pow(1-k,3)));if(k>=1)clearInterval(it)},30)};
+const IOc='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){IOc.unobserve(e.target);arranca(e.target)}}),{threshold:.6}):null;
+const enPantalla=el=>{const r=el.getBoundingClientRect();return el.offsetParent!==null&&r.bottom>0&&r.top<innerHeight&&r.width>0};
+const contador=raiz=>{if(QUIETO||!IOc)return;raiz.querySelectorAll('.cnt').forEach(el=>{delete el.dataset.ya;el.style.opacity='0';IOc.observe(el);
+  const vig=setInterval(()=>{if(!el.isConnected||el.dataset.ya){clearInterval(vig);return}if(document.visibilityState==='visible'&&enPantalla(el)){clearInterval(vig);IOc.unobserve(el);arranca(el)}},1000)})};
 const IO='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');IO.unobserve(e.target)}}),{threshold:.15}):null;
 const anima=el=>{if(!el)return;el.classList.remove('vis');if(IO)IO.observe(el);else el.classList.add('vis')};
 // Divisiones redondas para un eje que llega hasta mx.
@@ -1150,7 +1163,7 @@ let x0=null;$('#lbV').addEventListener('touchstart',e=>{x0=e.touches.length===1?
 $('#lbV').addEventListener('touchend',e=>{if(x0!==null&&!$('#lb').classList.contains('zoom')){const d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>70)mueveLb(d<0?1:-1)}x0=null});
 
 // ---------- Ventana emergente ----------
-function abrePop(titulo,html,fijo){if(!$('#pop').classList.contains('on'))focoPop=document.activeElement;$('#popT').textContent=titulo;$('#popC').innerHTML=html;$('#pop').classList.toggle('fijo',!!fijo);$('#pop').classList.add('on');$('#pop').scrollTop=0;document.body.style.overflow='hidden';$('#popX').focus({preventScroll:true})}
+function abrePop(titulo,html,fijo,etq){if(!$('#pop').classList.contains('on'))focoPop=document.activeElement;$('#popT').textContent=titulo;$('#popT').hidden=!titulo;$('#pop').classList.toggle('sint',!titulo);if(titulo)$('#pop').removeAttribute('aria-label');else $('#pop').setAttribute('aria-label',etq||'Información');$('#popC').innerHTML=html;$('#pop').classList.toggle('fijo',!!fijo);$('#pop').classList.add('on');$('#pop').scrollTop=0;document.body.style.overflow='hidden';$('#popX').focus({preventScroll:true})}
 function cierraPop(){$('#pop').classList.remove('on');document.body.style.overflow='';if(focoPop&&focoPop.focus&&document.contains(focoPop))focoPop.focus({preventScroll:true})}
 $('#popX').onclick=cierraPop;
 // Desplegables de una ventana: se abre uno cada vez (por si el navegador no lo hace solo).
@@ -1168,7 +1181,7 @@ document.addEventListener('click',e=>{
   const v=e.target.closest('[data-ver]');if(v){e.preventDefault();verPop(v.dataset.ver);return}
   const a=e.target.closest('#popC a[href^="#"]');if(a){cierraPop();return}
   const t=e.target.closest('[data-pop]');
-  if(t&&POPUPS[t.dataset.pop]){e.preventDefault();e.stopPropagation();const P=POPUPS[t.dataset.pop];abrePop(P.titulo,P.html,P.fijo)}
+  if(t&&POPUPS[t.dataset.pop]){e.preventDefault();e.stopPropagation();const P=POPUPS[t.dataset.pop];/* Las «i» de los gráficos abren directamente la explicación, sin el título «Cómo leer…» */abrePop(t.dataset.pop.startsWith('g_')?'':P.titulo,P.html,P.fijo,P.titulo)}
 },true);
 
 // ---------- Menú del móvil ----------
@@ -1366,7 +1379,7 @@ function metodo(){
       const cs=nums.length?(nums[0]===nums[nums.length-1]?'Caso '+nums[0]:`Casos ${nums[0]} a ${nums[nums.length-1]}`):'Ningún caso';
       const ver=vs.length===1?'Ver la versión':`Ver las ${vs.length} versiones`;
       return `<div class="vmaj"><button class="vmb" aria-expanded="false" aria-controls="vs-${k}" data-tx="${ver}"><b>v${k}</b><div><span class="fe">${vs.length} ${vs.length===1?'versión':'versiones'}${fe?' · '+fe:''}</span><p>${esc(vs[0].resumen)}</p><span class="cs">${cs} · ${cam} ${cam===1?'cambio':'cambios'}</span></div><span class="tg2">${ver}</span></button><div class="vsub" id="vs-${k}" hidden><div class="vlist">${sub.map(vc).join('')}</div></div></div>`}).join('')};
-  $('#vPil').innerHTML=grupo(METODO.versiones.filter(x=>x.fase==='piloto'),false);
+  $('#vPil').innerHTML=grupo(METODO.versiones.filter(x=>x.fase==='piloto'),true);
   $('#vCB').innerHTML=grupo(METODO.versiones.filter(x=>x.fase==='cb'),true);
   $$('.vmb').forEach(b=>b.onclick=()=>{const ab=b.getAttribute('aria-expanded')!=='true';b.setAttribute('aria-expanded',ab);$('#'+b.getAttribute('aria-controls')).hidden=!ab;b.querySelector('.tg2').textContent=ab?'Ocultar':b.dataset.tx});
   // Línea de tiempo: cada versión es un punto (negro si con ella se hizo algún caso); debajo, sus cambios por línea.
@@ -1433,7 +1446,7 @@ function resultados(){
   const hum=ERRORES.filter(e=>e.o==='humano'),pHg=hum.length?Math.round(100*hum.filter(e=>e.c==='grafico').length/hum.length):0,pHc=hum.length?Math.round(100*hum.filter(e=>e.c==='concepto').length/hum.length):0;
   const FBk=RESULTADOS.fiab&&RESULTADOS.fiab.kappa;
   // 0. En resumen: tres respuestas, cada una lleva a su gráfico.
-  $('#rKpi').innerHTML=`<button class="kpi" data-k="1"><h4>Aplican la teoría</h4><div class="big">${Math.round(ma)} %<small>A</small> &nbsp;${Math.round(mb)} %<small>B</small></div>
+  $('#rKpi').innerHTML=`<button class="kpi" data-k="1"><h4>Aplican la teoría</h4><div class="big"><span class="cnt" data-n="${Math.round(ma)}">${Math.round(ma)}</span> %<small>A</small> &nbsp;<span class="cnt" data-n="${Math.round(mb)}">${Math.round(mb)}</span> %<small>B</small></div>
       <div class="kb" style="margin-top:16px"><span>A · solo IA</span><span class="tr"><i style="width:${ma}%;background:#111"></i></span><b>${Math.round(ma)} %</b></div><div class="kb"><span>B · IA + humano</span><span class="tr"><i style="width:${mb}%;background:#9a9a9a"></i></span><b>${Math.round(mb)} %</b></div>
       <p>Fidelidad media a la teoría de Campo Baeza en los ${CB.length} casos de la fase Campo Baeza. Con las líneas ya separadas (${nums(CMP)}), A ${Math.round(ma2)} % y B ${Math.round(mb2)} %: la diferencia sale casi toda de un caso.</p><span class="ver">Ver caso a caso</span></button>
     <button class="kpi" data-k="3"><h4>No copian la obra</h4><div class="big">${rei}<small>de ${props.length}</small></div><div class="cuadros">${props.map(x=>`<i class="${x.startsWith('reinterp')?'':'no'}"></i>`).join('')}</div>
@@ -1445,6 +1458,7 @@ function resultados(){
     <div><h4>Se puede afirmar</h4><p>Las dos líneas aplican mucho la teoría (entre ${Math.round(Math.min(...CB.flatMap(c=>[c.fa,c.fb]).filter(v=>v!=null)))} y ${Math.round(Math.max(...CB.flatMap(c=>[c.fa,c.fb]).filter(v=>v!=null)))} %) y ninguna propuesta copia la obra: el parecido medio baja de ${num(simPil)} en el piloto a ${num(simCB)}. Con este método, la IA reinterpreta sin copiar.</p></div>
     <div><h4>Todavía no</h4><p>Que la corrección del autor mejore o empeore la propuesta. ${frRuido} Con ${CMP.length} casos comparables, una diferencia así puede ser azar.</p></div>
     <div><h4>Con cautela</h4><p>Quien puntúa también es una IA, con una sola nota de fidelidad por propuesta${FBk!=null?`, y cuando un segundo evaluador repitió el parecido apenas coincidió más que por azar (kappa ${k2(FBk)})`:''}. Además, el autor corrige sobre todo lo que la rúbrica no mide: el ${pHg} % de sus ${hum.length} correcciones son de dibujo y el ${pHc} %, de concepto. Hipótesis por comprobar: la rúbrica premia lo que la IA sabe explicar, y la mirada humana pesa en lo que no se puntúa.</p></div></div>`;
+  contador($('#rKpi'));
   $('#rKpi').onclick=e=>{const b=e.target.closest('.kpi');if(b)activa(INDICES.find(x=>x.cont.id==='tRes'),+b.dataset.k,true)};
   // 1. Fidelidad a la teoría
   $('#rLeyF').innerHTML=leyenda(['A','B']);
@@ -1452,8 +1466,8 @@ function resultados(){
   $('#rFidC').innerHTML=`De media, A aplica el <b>${Math.round(ma)} %</b> de la teoría y B el <b>${Math.round(mb)} %</b>. A queda por encima en ${ganaA} ${ganaA===1?'caso':'casos'} y B en ${ganaB}, pero el ${nCaso(BASE_AB)} es la línea base. ${frRuido}`;
   // 2. Parecido con la obra
   $('#rLey').innerHTML=leyenda(['A','B','C']);
-  const i18=KS.findIndex(k=>esCB(k.caso));
-  $('#rSim').innerHTML=grafFilas({filas:KS.map((c,i)=>({sep:i===0?'Fase piloto <span>casos 001 a 017 · se buscaba el parecido</span>':i===i18?'Fase Campo Baeza <span>desde el 018 · se busca reinterpretar sin copiar</span>':'',
+  const KSo=[...KS.filter(k=>esCB(k.caso)),...KS.filter(k=>!esCB(k.caso))],iPil=KSo.findIndex(k=>!esCB(k.caso));
+  $('#rSim').innerHTML=grafFilas({filas:KSo.map((c,i)=>({sep:i===0?'Fase Campo Baeza <span>desde el 018 · se busca reinterpretar sin copiar</span>':i===iPil?'Fase piloto <span>casos 002 a 017 · se buscaba el parecido</span>':'',
       lab:labCaso(c.caso),caso:c.caso,v:{A:c.a,B:c.b,...(c.c!=null?{C:c.c}:{})},aria:`${nCaso(c.caso)} ${nom(c.caso)}`})),min:0,max:5,ticks:[0,1,2,3,4,5],fmtv:num,fmtt:String});
   const sinB=PIL.filter(c=>c.b==null&&c.a!=null);
   $('#rSimC').innerHTML=(sinB.length?`En ${listaY(sinB.map(c=>'el '+nCaso(c.caso)))} no hay propuesta B: desde la versión 3.6 el piloto trabajó con dos diseñadores, A y C. `:'')+`Parecido medio: <b>${num(simPil)}</b> sobre 5 en la fase piloto y <b>${num(simCB)}</b> en la fase Campo Baeza. Las propuestas se alejan más del original, que es lo que pide el encargo. El caso 001 queda fuera: fue un ensayo.`;
@@ -1548,8 +1562,8 @@ function errores(caso){
   const a=E.filter(e=>e.l==='A'),b=E.filter(e=>e.l==='B'),hum=b.filter(e=>e.o==='humano').length,rec=E.filter(e=>e.vr).length;
   const cat=cuenta('c'),gr=cuenta('g');
   const barras=(obj,k,tx,orden,cl)=>{const mx=Math.max(...orden.map(x=>obj[x]||0));return orden.filter(x=>obj[x]).map(x=>`<button class="bar ${cl?cl+x:''}" data-k="${k}" data-v="${x}"><span>${tx(x)}</span><span><i style="width:${obj[x]/mx*100}%"></i></span><span>${obj[x]}</span></button>`).join('')};
-  $('#eRes').innerHTML=`<div><h4>Registrados</h4><div class="big">${E.length}<small>errores</small></div><div class="ln"><b>A · solo IA:</b> ${a.length}, todos detectados por la IA.</div><div class="ln"><b>B · IA + humano:</b> ${b.length}: ${b.length-hum} de la IA y ${hum} del autor.</div><div class="ln">${rec} de ${E.length} ya recogidos en una versión del protocolo.</div></div>
-    <div><h4>Por categoría</h4>${barras(cat,'c',x=>CAT[x]||x,Object.keys(cat).sort((p,q)=>cat[q]-cat[p]))}</div><div><h4>Por gravedad</h4>${barras(gr,'g',cap,['grave','media','leve'],'g-')}<p class="nota" style="margin-top:22px">El número de errores no mide la calidad de una línea: B recoge además las correcciones del autor. En el 018, línea base, no se registraron los errores que vio la IA: el registro empieza en la versión 5.0.</p></div>`;
+  $('#eRes').innerHTML=`<div><h4>Registrados</h4><div class="big"><span class="cnt" data-n="${E.length}">${E.length}</span><small>errores</small></div><div class="ln"><b>A · solo IA:</b> ${a.length}, todos detectados por la IA.</div><div class="ln"><b>B · IA + humano:</b> ${b.length}: ${b.length-hum} de la IA y ${hum} del autor.</div><div class="ln">${rec} de ${E.length} ya recogidos en una versión del protocolo.</div></div>
+    <div><h4>Por categoría</h4>${barras(cat,'c',x=>CAT[x]||x,Object.keys(cat).sort((p,q)=>cat[q]-cat[p]))}</div><div><h4>Por gravedad</h4>${barras(gr,'g',cap,['grave','media','leve'],'g-')}<p class="nota" style="margin-top:22px">El número de errores no mide la calidad de una línea: B recoge además las correcciones del autor. En el 018, línea base, no se registraron los errores que vio la IA: el registro empieza en la versión 5.0.</p></div>`;contador($('#eRes'));
   anima($('#eRes'));
   // Errores por caso: una fila por caso y una barra por línea (negro, la IA; gris, el autor).
   const casosE=[...new Set(E.map(e=>e.caso))].sort();
@@ -1845,11 +1859,19 @@ function abreCrit(id){
   const ev=(TEORIA.evid[id]||[]).slice().sort((a,b)=>b.caso.localeCompare(a.caso)||a.l.localeCompare(b.l));
   const lam=e=>e.cods.map(cd=>PLANOS.find(p=>p.caso===e.caso&&p.l===e.l&&p.c===cd)).filter(Boolean);
   // Todas las propuestas que lo cumplen (no solo unas pocas), cada una con la lámina que citó el evaluador.
-  const cum=ev.filter(e=>e.n===2).map(e=>({e,p:lam(e)[0]})),ejs=cum.filter(x=>x.p),sinL=cum.filter(x=>!x.p);
+  // Si el evaluador no citó lámina, el dibujo que mejor enseña ese criterio (marcado con *); el C12 se lee en la memoria.
+  const repr=e=>{const ps=PLANOS.filter(p=>p.caso===e.caso&&p.l===e.l),by=f=>ps.find(f);
+    if(id==='C13')return by(p=>p.t==='croquis')||by(p=>p.c==='S01')||ps[0];
+    if(/^C[1-7]$/.test(id))return by(p=>p.c==='S01')||by(p=>p.t==='sección/alzado')||ps[0];
+    return by(p=>p.t==='planta'&&/baja|acceso|n0|0_60/i.test(p.id))||by(p=>p.t==='planta')||ps[0]};
+  const memDe=e=>(FICHAS[e.caso].memorias||[]).includes(e.l);
+  const cum=ev.filter(e=>e.n===2).map(e=>{const c=lam(e)[0];return c?{e,p:c}:id==='C12'&&memDe(e)?{e,mem:1}:{e,p:repr(e),rep:1}}),ejs=cum.filter(x=>x.p||x.mem),sinL=cum.filter(x=>!x.p&&!x.mem);
   let h=`<p class="meta2">${pesoTx(w)}${k.nota?' · '+esc(k.nota):''}</p><p class="dice">${esc(k.dice)}</p>`;
   h+=`<div class="venove"><div><b>Se ve en el dibujo si…</b><p>${esc(cap(k.ve))}.</p></div><div><b>Falla si…</b><p>${esc(cap(k.no))}.</p></div></div>`;
   h+=`<h4>Qué propuestas lo cumplen</h4>${barra3(q)}<p style="margin-top:10px">${frase3(q)}</p>`;
-  if(ejs.length)h+=`<p class="nota" style="margin:16px 0 10px">${ejs.length===q.n2?'Todas, con':'Las que citan'} la lámina donde se ve. Pulsa una para ampliarla.</p><div class="ejs">${ejs.map(({e,p})=>`<figure class="pl" data-id="${p.id}"><img loading="lazy" src="img/mini/${p.id}.webp" alt="${esc(p.n)}"><figcaption><b>${nCaso(e.caso)} · ${e.l}</b> · ${p.c}</figcaption></figure>`).join('')}</div>`;
+  if(ejs.length)h+=`<p class="nota" style="margin:16px 0 10px">${id==='C12'?'Las que lo cumplen. Este criterio se comprueba en la memoria: pulsa una para leerla.':`Las ${ejs.length} que lo cumplen, cada una con la lámina donde se ve. Pulsa una para ampliarla.`}</p><div class="ejs">${ejs.map(({e,p,mem,rep})=>mem
+      ?`<a class="pl pmem" href="memorias/${e.caso}_${e.l}.html"><span class="mimg">Memoria</span><span class="fc"><b>${nCaso(e.caso)} · ${e.l}</b> · memoria</span></a>`
+      :`<figure class="pl" data-id="${p.id}"><img loading="lazy" src="img/mini/${p.id}.webp" alt="${esc(p.n)}"><figcaption><b>${nCaso(e.caso)} · ${e.l}</b> · ${p.c||cap(p.t)}${rep?' *':''}</figcaption></figure>`).join('')}</div>${ejs.some(x=>x.rep)?'<p class="nota" style="margin-top:8px">* El evaluador no citó una lámina concreta: se muestra el dibujo de la propuesta que mejor enseña este criterio.</p>':''}`;
   if(sinL.length)h+=`<p class="nota" style="margin-top:10px">Sin lámina citada: ${listaY(sinL.map(({e})=>`${nCaso(e.caso)} · ${e.l}`))}.</p>`;
   if(ev.length)h+=`<details><summary>Lo que dijo el evaluador de cada propuesta (${ev.length})</summary><ul class="com">${ev.map(e=>`<li><b>${nCaso(e.caso)} · ${e.l}</b> — ${e.n==null?'no procede':e.n+' de 2'}: ${esc(llano(e.txt))}</li>`).join('')}</ul></details>`;
   h+=`<p class="nota" style="margin-top:20px">Fuente: ${esc(k.fuente)}.</p>`;
