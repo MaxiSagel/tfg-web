@@ -621,9 +621,8 @@ html[data-tema=oscuro] .cmp .lupa,html[data-tema=oscuro] #pop .caja{box-shadow:n
 .cbz-o{list-style:none;padding:0!important}.cbz-o li{display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid var(--li);padding:5px 0;margin:0!important}
 .cbz-o li span{color:var(--mu);white-space:nowrap}
 @media(max-width:820px){.cbz{grid-template-columns:1fr;gap:18px}.cbz-b{grid-template-columns:1fr;gap:10px}.cbz-b>div{display:grid;grid-template-columns:96px 1fr;gap:10px}.cbz-b b{margin:0;font-size:15px}
-  .cbz-l{font-size:15.5px;margin-bottom:16px}.cbz-q{font-size:15px;margin-top:16px}.cbz-c{max-height:56vh}
-  /* En el móvil, el desplegable abierto ocupa el sitio del resumen: nunca hace falta desplazarse */
-  .cbz:has(details[open]) .cbz-r{display:none}}
+  .cbz-l{font-size:15.5px;margin-bottom:16px}.cbz-q{font-size:15px;margin-top:16px}.cbz-c{max-height:48svh}}
+/* El resumen de arriba nunca se oculta: con un desplegable abierto, la ventana se desplaza lo justo para enseñarlo. */
 @media(max-width:600px){.tc{min-height:0}.tc .d{margin-bottom:6px}}
 @media(max-width:600px){#pop.fijo{padding:0}#pop.fijo .caja{max-height:100%;height:100%;padding:24px 18px 20px;border:0}#pop.fijo h3{font-size:24px;margin-bottom:14px}
   .cbz-d summary{padding:11px 30px 11px 0;font-size:14.5px}}
@@ -1155,6 +1154,7 @@ function abrePop(titulo,html,fijo){if(!$('#pop').classList.contains('on'))focoPo
 function cierraPop(){$('#pop').classList.remove('on');document.body.style.overflow='';if(focoPop&&focoPop.focus&&document.contains(focoPop))focoPop.focus({preventScroll:true})}
 $('#popX').onclick=cierraPop;
 // Desplegables de una ventana: se abre uno cada vez (por si el navegador no lo hace solo).
+$('#popC').addEventListener('toggle',e=>{const dd=e.target;if(dd.tagName==='DETAILS'&&dd.open&&dd.closest('.cbz'))requestAnimationFrame(()=>dd.scrollIntoView({block:'nearest',behavior:'smooth'}))},true);
 $('#popC').addEventListener('toggle',e=>{const d=e.target;if(d.tagName==='DETAILS'&&d.open&&d.getAttribute('name'))$$('#popC details[name="'+d.getAttribute('name')+'"]').forEach(x=>{if(x!==d)x.open=false})},true);
 $('#pop').addEventListener('click',e=>{if(e.target.id==='pop')cierraPop()});
 document.addEventListener('keydown',e=>{
