@@ -1658,9 +1658,24 @@ function pintaSigue(){const m=$$('main.vista').find(x=>!x.hidden),s=m&&m.querySe
  const abajo=()=>innerHeight+scrollY>=document.documentElement.scrollHeight-6;
  const empuja=()=>{const m=$$('main.vista').find(x=>!x.hidden),s=m&&m.querySelector(':scope>.sigue:not([hidden])');if(!s||document.body.style.overflow==='hidden')return;
    if(!s.classList.contains('armado')){s.classList.add('armado');s.querySelector('.sh').textContent=`Una vez más para pasar a ${s.querySelector('b').textContent}`;clearTimeout(arm);arm=setTimeout(()=>s.classList.remove('armado'),4000);return}
-   clearTimeout(arm);s.classList.remove('armado');location.hash=s.querySelector('a').getAttribute('href')};
+   clearTimeout(arm);s.classList.remove('armado');para();location.hash=s.querySelector('a').getAttribute('href')};
+ // Pausa en el título (v6.5): al llegar así a una sección, la página se queda quieta en su título. La inercia del
+ // gesto no la arrastra; el primer gesto nuevo se absorbe y el segundo ya baja (pasados 2,5 s, basta con uno).
+ let quieto=null;
+ function para(){quieto={t:performance.now(),n:0,ult:0}}
+ const suelta=()=>{quieto=null};
+ const gestoNuevo=()=>{if(!quieto)return true;const t=performance.now();if(t-quieto.t<700)return false;
+   if(quieto.n>=1||t-quieto.t>2500){suelta();return true}quieto.n++;return false};
+ addEventListener('wheel',e=>{if(!quieto)return;const t=performance.now(),nuevo=t-quieto.ult>380;quieto.ult=t;
+   if(nuevo&&gestoNuevo())return;e.preventDefault()},{passive:false,capture:true});
+ addEventListener('touchstart',()=>{if(quieto&&!gestoNuevo())quieto.toque=true},{passive:true,capture:true});
+ addEventListener('touchmove',e=>{if(quieto&&quieto.toque)e.preventDefault()},{passive:false,capture:true});
+ addEventListener('touchend',()=>{if(quieto)quieto.toque=false},{passive:true,capture:true});
+ // La inercia del dedo (iOS sigue desplazando sin eventos táctiles): se sujeta arriba durante el primer segundo
+ addEventListener('scroll',()=>{if(quieto&&performance.now()-quieto.t<1200&&scrollY>0)window.scrollTo(0,0)},{passive:true});
+ addEventListener('keydown',()=>suelta());
  // Rueda: cada gesto (una ráfaga de eventos) cuenta una vez, y solo si empieza ya abajo del todo
- addEventListener('wheel',e=>{if(e.deltaY<=0)return;const t=performance.now(),nuevo=t-gesto>380;gesto=t;if(nuevo&&abajo())empuja()},{passive:true});
+ addEventListener('wheel',e=>{if(e.deltaY<=0||quieto)return;const t=performance.now(),nuevo=t-gesto>380;gesto=t;if(nuevo&&abajo())empuja()},{passive:true});
  // Dedo: un arrastre hacia arriba de más de 50 px, empezado abajo del todo
  addEventListener('touchstart',e=>{ty=abajo()?e.touches[0].clientY:null},{passive:true});
  addEventListener('touchend',e=>{if(ty==null)return;const dy=ty-e.changedTouches[0].clientY;ty=null;if(dy>50&&abajo())empuja()},{passive:true});}
