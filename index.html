@@ -248,12 +248,14 @@ main.vista{overflow-x:clip}
 html[data-tema=oscuro] .bj{box-shadow:none}
 /* Casos: carrusel */
 .cflow{position:absolute;inset:0;transform-style:preserve-3d}
-.cf{position:absolute;left:50%;top:46%;width:min(250px,44vw);text-decoration:none;will-change:transform,opacity;backface-visibility:hidden}
+.cf{position:absolute;left:50%;top:46%;width:min(250px,42vw);text-decoration:none;will-change:transform,opacity;backface-visibility:hidden}
 .cf img{display:block;width:100%;aspect-ratio:700/1004;object-fit:cover;background:#fff;border:1px solid var(--li);box-shadow:0 30px 60px -30px rgba(0,0,0,.3)}
 .cf span{display:block;font:500 13px/1.35 var(--sans);margin-top:12px;opacity:0;transition:opacity .3s;text-align:center}
 .cf span b{font-weight:600;color:var(--mu);margin-right:6px}
 .cf.on span{opacity:1}
 .cf-fase{position:absolute;left:0;right:0;top:4%;margin:0;text-align:center;font:600 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--mu);z-index:2}
+/* Sin cortes secos (v6.4): lo que sale por los lados se desvanece en vez de quedar cortado por el borde */
+.esc-ab[data-vis=casos] .ab-vis,.tun{-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
 /* Planos: muro de láminas */
 .muro{position:absolute;left:50%;top:50%;width:1500px;display:grid;grid-template-columns:repeat(7,1fr);gap:18px;transform-style:preserve-3d;
   transform:translate(-50%,-50%) rotateX(calc(56deg - var(--p,0) * 30deg)) rotateZ(calc(-32deg + var(--p,0) * 16deg)) translate3d(calc(var(--p,0) * -320px + 120px), calc(var(--p,0) * 200px - 140px), 0)}
@@ -262,18 +264,18 @@ html[data-tema=oscuro] .bj{box-shadow:none}
 .esc-ab[data-vis=planos] .ab-vis{-webkit-mask-image:radial-gradient(ellipse at center,#000 55%,transparent 80%);mask-image:radial-gradient(ellipse at center,#000 55%,transparent 80%)}
 @media(max-width:820px){.muro{width:980px;gap:12px}}
 /* Evolución: superposición de A y B */
-.sup{position:absolute;inset:4% 2% 16%;isolation:isolate}
-.sup figure{position:absolute;top:0;bottom:0;width:62%;margin:0;background:#fff;--a:clamp(0, calc((var(--p,0) - .22) * 1.9), 1)}
+.sup{position:absolute;inset:7% 7% 18%;isolation:isolate}
+.sup figure{position:absolute;top:0;bottom:0;width:56%;margin:0;background:#fff;--a:clamp(0, calc((var(--p,0) - .22) * 1.9), 1)}
 .sup img{display:block;width:100%;height:100%;object-fit:contain}
-.sA{left:0;transform-origin:100% 50%;transform:perspective(1000px) translateX(calc(var(--a) * 30.6%)) rotateY(calc((1 - var(--a)) * 30deg));border:1px solid var(--li)}
-.sB{right:0;transform-origin:0 50%;transform:perspective(1000px) translateX(calc(var(--a) * -30.6%)) rotateY(calc((1 - var(--a)) * -30deg));mix-blend-mode:multiply;border:1px solid var(--li)}
+.sA{left:0;transform-origin:100% 50%;transform:perspective(1000px) translateX(calc(var(--a) * 39.3%)) rotateY(calc((1 - var(--a)) * 22deg));border:1px solid var(--li)}
+.sB{right:0;transform-origin:0 50%;transform:perspective(1000px) translateX(calc(var(--a) * -39.3%)) rotateY(calc((1 - var(--a)) * -22deg));mix-blend-mode:multiply;border:1px solid var(--li)}
 .sA img{filter:url(#tintA)}.sB img{filter:url(#tintB)}
 .sup-ley{position:absolute;left:0;right:0;bottom:2%;margin:0;text-align:center;font:500 12.5px var(--sans);color:var(--mu);opacity:clamp(0, calc((var(--p,0) - .6) * 5), 1)}
 .sup-ley span{display:inline-flex;align-items:center;margin-right:14px;color:var(--tx)}
 /* Método: axonometría despiezada */
-.axo{position:absolute;left:50%;top:60%;width:0;height:0;transform-style:preserve-3d;transform:rotateX(58deg) rotateZ(calc(-44deg + var(--p,0) * 24deg))}
+.axo{position:absolute;left:50%;top:64%;width:0;height:0;transform-style:preserve-3d;transform:rotateX(58deg) rotateZ(calc(-44deg + var(--p,0) * 24deg))}
 .axo-p{position:absolute;width:250px;height:250px;left:-125px;top:-125px;border:1px solid var(--tx);background:rgba(255,255,255,.88);padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;
-  transform:translateZ(calc(var(--i) * (5px + clamp(0, calc((var(--p,0) - .15) * 1.5), 1) * 44px)))}
+  transform:translateZ(calc(var(--i) * (5px + clamp(0, calc((var(--p,0) - .15) * 1.5), 1) * 36px)))}
 .axo-p span{font:500 11px var(--sans);letter-spacing:.1em;color:var(--mu)}.axo-p b{font:500 17px/1.2 var(--sans);letter-spacing:-.01em}
 .axo-p:last-child{background:var(--tx);color:#fff}.axo-p:last-child span{color:#bbb}
 @media(max-width:820px){.axo{top:66%}.axo-p{width:170px;height:170px;left:-85px;top:-85px;padding:8px 10px;transform:translateZ(calc(var(--i) * (4px + clamp(0, calc((var(--p,0) - .15) * 1.5), 1) * 30px)))}.axo-p b{font-size:13px}}
@@ -1557,10 +1559,10 @@ const ESC=(()=>{
     sObj=R&&R.id==='v-inicio'?Math.min(1,Math.max(0,scrollY/Math.max(1,cara.offsetHeight*.75))):0;
     prog.style.transform=`scaleX(${Math.min(1,Math.max(0,scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight))).toFixed(4)})`};
   // Carrusel de casos: posición de cada obra según lo bajado
-  const flujo=(e,p)=>{const cs=e.querySelectorAll('.cf'),n=cs.length,m=innerWidth<700,G1=m?120:210,G2=m?34:70;
+  const flujo=(e,p)=>{const cs=e.querySelectorAll('.cf'),n=cs.length,m=innerWidth<700,G1=m?100:210,G2=m?30:70;
     cs.forEach((c,i)=>{const x=i-p*(n-1),ax=Math.abs(x),sg=Math.sign(x),pos=sg*(Math.min(ax,1)*G1+Math.max(0,ax-1)*G2);
       c.style.transform=`translate(-50%,-50%) translate3d(${pos.toFixed(1)}px,0,${(-Math.min(ax,1)*160-Math.max(0,ax-1)*30).toFixed(1)}px) rotateY(${(-Math.max(-1,Math.min(1,x))*58).toFixed(1)}deg)`;
-      c.style.opacity=ax>7?0:(1-Math.max(0,ax-5)/2).toFixed(3);c.style.zIndex=100-Math.round(ax*10);c.classList.toggle('on',ax<.5)});
+      const a0=m?.6:1.3,a1=m?1.5:2.7;c.style.opacity=Math.max(0,1-Math.max(0,ax-a0)/(a1-a0)).toFixed(3);c.style.visibility=ax>a1?'hidden':'';c.style.zIndex=100-Math.round(ax*10);c.classList.toggle('on',ax<.5)});
     const f=e.querySelector('.cf-fase'),cen=cs[Math.round(p*(n-1))];if(f&&cen&&f.textContent!==cen.dataset.fase)f.textContent=cen.dataset.fase};
   // Baraja de Teoría: de un mazo tumbado en el centro a una rejilla (5 columnas; 4 en el móvil), carta a carta
   const baraja=(e,p)=>{const V=e.querySelector('.ab-vis'),cs=e.querySelectorAll('.bj');if(!V||!cs.length)return;const W=V.clientWidth,Hh=V.clientHeight,n=cs.length;
@@ -1589,8 +1591,8 @@ const ESC=(()=>{
   const pinta=(e,p)=>{e.style.setProperty('--p',p.toFixed(4));const k=e.dataset.esc;
     if(k==='ab'){if(e.dataset.vis==='casos')flujo(e,p);else if(e.dataset.vis==='aprendizaje')nube(e,p);else if(e.dataset.vis==='teoria')baraja(e,p)}
     else if(k==='tun'){const W=e.querySelector('.tun').clientWidth,Hh=e.querySelector('.tun').clientHeight,D=Math.min(430,Math.max(240,W*.75)),n=FIG.length;
-      FIG.forEach((f,i)=>{const z=-(i+1)*D+p*(n+1)*D,lado=i%2?1:-1,x=lado*W*(.2+(i%3)*.05),y=((i*7)%5-2)*Hh*.07;
-        const op=z<-5*D?0:z<-4*D?(z+5*D)/D:z>160?0:z>-140?(160-z)/300:1;
+      FIG.forEach((f,i)=>{const z=-(i+1)*D+p*(n+1)*D,lado=i%2?1:-1,x=lado*W*(W<500?.1+(i%3)*.04:.2+(i%3)*.05),y=((i*7)%5-2)*Hh*.07;
+        const op=z<-5*D?0:z<-4*D?(z+5*D)/D:z>0?0:z>-360?-z/360:1;
         f.style.opacity=op.toFixed(3);f.style.transform=`translate(-50%,-50%) translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${z.toFixed(1)}px) rotateY(${(-lado*14).toFixed(1)}deg)`});
       const fase=Math.min(FRASES.length-1,Math.floor(p*FRASES.length*1.08));FRASES.forEach((li,i)=>{li.classList.toggle('on',i===fase);li.classList.toggle('ya',i<fase)})}
     else if(k==='pas'){const cx=innerWidth/2,x0=$('#pasT').parentElement.getBoundingClientRect().left-p*dx;PASOS.forEach(li=>{const d=Math.max(-1.6,Math.min(1.6,(x0+li.offsetLeft+li.offsetWidth/2-cx)/Math.max(320,innerWidth*.5)));
