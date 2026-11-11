@@ -91,7 +91,13 @@ h3.sec .info{margin:0}
 /* Índice fijo: se queda bajo la cabecera mientras bajas y marca el apartado en el que estás */
 .tabbar.indice{position:sticky;top:var(--hh,61px);z-index:30;background:rgba(255,255,255,.96);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .pane[hidden]{display:none}
-.pane+.pane{margin-top:0}
+.pane+.pane{margin-top:120px}
+/* v6.2: cada apartado es un capítulo de la página; su título entra como en apple.com (la línea se dibuja y el
+   nombre sube desde detrás de ella) */
+.cap{position:relative;display:flex;align-items:baseline;gap:18px;padding-top:20px;margin:0 0 34px;overflow:hidden}
+.cap::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--tx);transform-origin:0 50%}
+.cap .n{font:500 12px var(--sans);letter-spacing:.12em;color:var(--mu)}
+.cap h3{font:300 clamp(32px,5.2vw,72px)/1.05 var(--sans);letter-spacing:-.04em;margin:0;padding-bottom:.08em}
 .pane-t{font:400 clamp(24px,2.6vw,30px)/1.15 var(--serif);letter-spacing:-.02em;margin:0 0 24px;padding-top:16px;border-top:1px solid var(--tx)}
 
 
@@ -197,12 +203,12 @@ h3.sec .info{margin:0}
 .recorre a:hover b{text-decoration:underline;text-underline-offset:8px;text-decoration-thickness:1px}
 @media(max-width:700px){.recorre a{grid-template-columns:34px minmax(0,1fr) 20px;padding:18px 0}.recorre span:not(.n):not(.mas){grid-column:2/4;grid-row:2}.recorre .mas{grid-column:3;grid-row:1}}
 /* Entrada en 3D de lo que aparece al bajar (todas las secciones): sube, se endereza y se enciende, en cascada */
-.rv{opacity:0;transform:perspective(1100px) translateY(44px) rotateX(16deg);transform-origin:50% 100%;transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform 1.1s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--k,0) * 75ms)}
+.rv{opacity:0;transform:perspective(1100px) translateY(36px) rotateX(14deg);transform-origin:50% 100%;transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--k,0) * 60ms)}
 .rv.vis{opacity:1;transform:none}
 /* Títulos de sección: suben desde detrás de una línea */
 .cab h2{animation:titulo 1s cubic-bezier(.2,.7,.2,1) backwards}
 .cab+.lead,#v-caso h1{animation:ap .9s .12s cubic-bezier(.2,.7,.2,1) backwards}
-@keyframes titulo{from{clip-path:inset(0 0 100% 0);transform:translateY(.4em)}to{clip-path:inset(0 0 0 0);transform:none}}
+@keyframes titulo{from{clip-path:inset(100% -20% -30% -20%);transform:translateY(.4em)}to{clip-path:inset(-40% -20% -30% -20%);transform:none}}
 /* Tarjetas de los casos: se inclinan hacia el puntero, como una lámina que se coge con la mano */
 @media(hover:hover) and (pointer:fine){.cc .im{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .5s cubic-bezier(.2,.7,.2,1),border-color .25s,box-shadow .4s}
   .cc:hover .im{box-shadow:0 30px 50px -30px rgba(0,0,0,.35)}}
@@ -234,12 +240,12 @@ main.vista{overflow-x:clip}
 @media(max-width:820px){.ab-c{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);gap:18px;align-content:stretch;padding:26px 0 70px}
   .sin-vis .ab-c{grid-template-rows:1fr;align-content:center}
   .ab-lead{font-size:clamp(19px,5vw,24px)!important}.ab-vis{height:100%}.ab-tit{left:18px;right:18px}.ab-c{left:18px;right:18px}.ab-baja{left:18px}}
-/* Teoría: anillo de criterios */
-.anillo{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;--R:360px;transform:translateZ(calc(var(--R) * -1)) rotateX(-10deg) rotateY(calc(var(--p,0) * -320deg + 30deg))}
-.an-c{position:absolute;width:150px;height:200px;left:-75px;top:-100px;border:1px solid var(--tx);background:#fff;padding:14px 14px 16px;display:flex;flex-direction:column;justify-content:space-between;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(calc(var(--i) * 360deg / var(--N))) translateZ(var(--R))}
-.an-c b{font:300 46px/1 var(--sans);letter-spacing:-.04em}.an-c span{font:500 13px/1.3 var(--sans)}
-.an-c.n-idea{background:var(--tx);color:#fff}.an-c.n-precision{border-color:#bdbdbd;color:#555}
-@media(max-width:820px){.anillo{--R:200px}.an-c{width:96px;height:128px;left:-48px;top:-64px;padding:9px}.an-c b{font-size:28px}.an-c span{font-size:10.5px}}
+/* Teoría: baraja de criterios (la coloca el programa) */
+.baraja{position:absolute;inset:0;perspective:1300px}
+.bj{position:absolute;left:0;top:0;width:var(--cw,120px);height:var(--ch,160px);border:1px solid var(--tx);background:#fff;padding:calc(var(--cw,120px) * .09);display:flex;flex-direction:column;justify-content:space-between;will-change:transform;box-shadow:0 18px 30px -22px rgba(0,0,0,.35)}
+.bj b{font:300 calc(var(--cw,120px) * .3)/1 var(--sans);letter-spacing:-.04em}.bj span{font:500 calc(var(--cw,120px) * .095)/1.25 var(--sans)}
+.bj.n-idea{background:var(--tx);color:#fff}.bj.n-precision{border-color:#bdbdbd;color:#555}
+html[data-tema=oscuro] .bj{box-shadow:none}
 /* Casos: carrusel */
 .cflow{position:absolute;inset:0;transform-style:preserve-3d}
 .cf{position:absolute;left:50%;top:46%;width:min(250px,44vw);text-decoration:none;will-change:transform,opacity;backface-visibility:hidden}
@@ -247,6 +253,7 @@ main.vista{overflow-x:clip}
 .cf span{display:block;font:500 13px/1.35 var(--sans);margin-top:12px;opacity:0;transition:opacity .3s;text-align:center}
 .cf span b{font-weight:600;color:var(--mu);margin-right:6px}
 .cf.on span{opacity:1}
+.cf-fase{position:absolute;left:0;right:0;top:4%;margin:0;text-align:center;font:600 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--mu);z-index:2}
 /* Planos: muro de láminas */
 .muro{position:absolute;left:50%;top:50%;width:1500px;display:grid;grid-template-columns:repeat(7,1fr);gap:18px;transform-style:preserve-3d;
   transform:translate(-50%,-50%) rotateX(calc(56deg - var(--p,0) * 30deg)) rotateZ(calc(-32deg + var(--p,0) * 16deg)) translate3d(calc(var(--p,0) * -320px + 120px), calc(var(--p,0) * 200px - 140px), 0)}
@@ -255,11 +262,11 @@ main.vista{overflow-x:clip}
 .esc-ab[data-vis=planos] .ab-vis{-webkit-mask-image:radial-gradient(ellipse at center,#000 55%,transparent 80%);mask-image:radial-gradient(ellipse at center,#000 55%,transparent 80%)}
 @media(max-width:820px){.muro{width:980px;gap:12px}}
 /* Evolución: superposición de A y B */
-.sup{position:absolute;inset:4% 2% 16%;transform-style:preserve-3d}
+.sup{position:absolute;inset:4% 2% 16%;isolation:isolate}
 .sup figure{position:absolute;top:0;bottom:0;width:62%;margin:0;background:#fff;--a:clamp(0, calc((var(--p,0) - .22) * 1.9), 1)}
 .sup img{display:block;width:100%;height:100%;object-fit:contain}
-.sA{left:0;transform-origin:100% 50%;transform:translateX(calc(var(--a) * 30.6%)) rotateY(calc((1 - var(--a)) * 30deg));border:1px solid var(--li)}
-.sB{right:0;transform-origin:0 50%;transform:translateX(calc(var(--a) * -30.6%)) rotateY(calc((1 - var(--a)) * -30deg));mix-blend-mode:multiply;border:1px solid var(--li)}
+.sA{left:0;transform-origin:100% 50%;transform:perspective(1000px) translateX(calc(var(--a) * 30.6%)) rotateY(calc((1 - var(--a)) * 30deg));border:1px solid var(--li)}
+.sB{right:0;transform-origin:0 50%;transform:perspective(1000px) translateX(calc(var(--a) * -30.6%)) rotateY(calc((1 - var(--a)) * -30deg));mix-blend-mode:multiply;border:1px solid var(--li)}
 .sA img{filter:url(#tintA)}.sB img{filter:url(#tintB)}
 .sup-ley{position:absolute;left:0;right:0;bottom:2%;margin:0;text-align:center;font:500 12.5px var(--sans);color:var(--mu);opacity:clamp(0, calc((var(--p,0) - .6) * 5), 1)}
 .sup-ley span{display:inline-flex;align-items:center;margin-right:14px;color:var(--tx)}
@@ -296,8 +303,10 @@ canvas.nube{position:absolute;inset:0;width:100%;height:100%}
 /* Barra de avance: una línea bajo la cabecera que crece mientras bajas */
 #prog{position:absolute;left:0;right:0;bottom:-1px;height:1.5px;background:var(--tx);transform:scaleX(0);transform-origin:0 50%;pointer-events:none}
 /* Pestañas: el apartado nuevo llega girando un poco, como una hoja que se pasa */
-.pane{animation:pasa .6s cubic-bezier(.2,.7,.2,1)}
-@keyframes pasa{from{opacity:0;transform:perspective(1400px) translateX(36px) rotateY(-7deg)}to{opacity:1;transform:none}}
+.rv.cap{opacity:1;transform:none}
+.rv.cap::before{transform:scaleX(0);transition:transform 1.3s cubic-bezier(.2,.7,.2,1)}
+.rv.cap h3,.rv.cap .n{display:inline-block;opacity:0;transform:translateY(70%) rotateX(-40deg);transform-origin:50% 100%;transition:opacity .8s ease .15s,transform 1.1s cubic-bezier(.2,.7,.2,1) .15s}
+.rv.cap.vis::before{transform:none}.rv.cap.vis h3,.rv.cap.vis .n{opacity:1;transform:none}
 /* Cambio de sección: la vista que se va se hunde y la nueva sube (View Transitions, donde el navegador las tiene) */
 header.top{view-transition-name:cabecera}
 ::view-transition-old(root){animation:vtSale .42s cubic-bezier(.4,0,.2,1) both}
@@ -1345,30 +1354,28 @@ function irA(bar,el,suave=true){const destino=()=>Math.max(0,el.getBoundingClien
   window.scrollTo({top:destino(),behavior:suave?'smooth':'auto'});setTimeout(()=>{const d=destino();if(Math.abs(d-scrollY)>3)window.scrollTo({top:d,behavior:'auto'})},suave?450:80)}
 function pestanas(cont,ini=0){
   const panes=[...cont.querySelectorAll(':scope > .pane')];if(!panes.length)return;
-  const bar=document.createElement('nav');bar.className='tabbar indice';bar.setAttribute('role','tablist');bar.setAttribute('aria-label','Apartados de la página');
-  bar.innerHTML=panes.map((p,i)=>`<button role="tab" aria-selected="false" data-i="${i}">${esc(p.dataset.tab)}</button>`).join('');
+  const bar=document.createElement('nav');bar.className='tabbar indice';bar.setAttribute('aria-label','Apartados de la página');
+  bar.innerHTML=panes.map((p,i)=>`<button aria-current="false" data-i="${i}">${esc(p.dataset.tab)}</button>`).join('');
   cont.prepend(bar);
+  // v6.2: los apartados ya no se esconden: van uno tras otro, cada uno con su título, y la barra es un índice
+  // pegado bajo la cabecera que marca dónde estás; pulsar un nombre baja hasta él.
+  panes.forEach((p,i)=>{p.hidden=false;if(!p.querySelector(':scope>.cap'))p.insertAdjacentHTML('afterbegin',`<div class="cap"><span class="n">${String(i+1).padStart(2,'0')}</span><h3>${esc(p.dataset.tab)}</h3></div>`)});
   for(let k=INDICES.length-1;k>=0;k--)if(INDICES[k].cont.id===cont.id)INDICES.splice(k,1);
   const ix={cont,bar,panes,act:-1};INDICES.push(ix);
   bar.onclick=e=>{const b=e.target.closest('button');if(b)activa(ix,+b.dataset.i,true)};
   bar.addEventListener('scroll',()=>marcaDesborde(bar),{passive:true});
-  activa(ix,ini,false);marcaDesborde(bar);
+  marcaIndice(ix,ini);marcaDesborde(bar);
 }
-function activa(ix,i,sube){
-  if(i!==ix.act){ix.act=i;ix.panes.forEach((p,k)=>p.hidden=k!==i);
-    [...ix.bar.children].forEach((b,k)=>b.setAttribute('aria-selected',k===i));
-    const b=ix.bar.children[i];ix.bar.scrollTo({left:Math.max(0,b.offsetLeft-ix.bar.offsetLeft-24),behavior:'smooth'});
-    dispatchEvent(new Event('resize'))}
-  // Si la barra está pegada arriba, el apartado nuevo se ve desde su principio.
-  if(sube){const y=ix.bar.getBoundingClientRect().top,hh=$('header.top').offsetHeight;
-    if(ix.bar.previousElementSibling===null&&y<=hh+1){const top=ix.cont.getBoundingClientRect().top+scrollY-hh;if(scrollY>top)window.scrollTo({top,behavior:'auto'})}}}
-// Muestra el apartado que contiene el elemento y baja hasta él (si es el apartado entero, arriba del todo).
+function marcaIndice(ix,i){if(i===ix.act)return;ix.act=i;[...ix.bar.children].forEach((b,k)=>b.setAttribute('aria-current',k===i));
+  const b=ix.bar.children[i];if(b&&ix.bar.scrollWidth>ix.bar.clientWidth)ix.bar.scrollTo({left:Math.max(0,b.offsetLeft-ix.bar.offsetLeft-24),behavior:'smooth'})}
+function activa(ix,i,sube){marcaIndice(ix,i);if(sube&&ix.panes[i])irA(ix.bar,ix.panes[i],!QUIETO)}
+// Muestra un apartado (o algo de dentro) bajando hasta él, por debajo de la cabecera y del índice.
 function ve(el){const ix=INDICES.find(x=>x.cont.contains(el));if(!ix){el.scrollIntoView();return}
-  const i=ix.panes.findIndex(p=>p===el||p.contains(el));if(i>=0)activa(ix,i,false);
-  // Con apertura (v6.1), un apartado entero se enseña desde la cabecera de su sección, ya pasada la escena
-  if(ix.panes.includes(el)){const m=el.closest('main.con-ab'),c=m&&m.querySelector(':scope>.w>.cab');if(!c){window.scrollTo(0,0);return}
-    requestAnimationFrame(()=>window.scrollTo(0,Math.max(0,c.getBoundingClientRect().top+scrollY-$('header.top').offsetHeight-12)));return}
+  const i=ix.panes.findIndex(p=>p===el||p.contains(el));if(i>=0)marcaIndice(ix,i);
   requestAnimationFrame(()=>irA(ix.bar,el,false))}
+// El índice sigue lo que se lee: marca el último apartado cuyo título ya ha pasado bajo la barra.
+{let espia=0;addEventListener('scroll',()=>{if(espia)return;espia=requestAnimationFrame(()=>{espia=0;INDICES.forEach(ix=>{if(!ix.cont.offsetParent)return;
+  const lim=Math.max(altoFijo(ix.bar)+60,innerHeight*.4);let k=0;ix.panes.forEach((p,i)=>{if(p.getBoundingClientRect().top<=lim)k=i});marcaIndice(ix,k)})})},{passive:true})}
 // Si las pestañas no caben, el borde derecho se desvanece para indicar que hay más.
 function marcaDesborde(bar){requestAnimationFrame(()=>{bar.classList.toggle('desborda',bar.scrollWidth>bar.clientWidth+2);bar.classList.toggle('fin',bar.scrollLeft+bar.clientWidth>=bar.scrollWidth-4)})}
 addEventListener('resize',()=>$$('.tabbar').forEach(marcaDesborde));
@@ -1474,22 +1481,23 @@ const ESC=(()=>{
   const LAM=[];
   todos.filter(esCB).slice().reverse().forEach(c=>['B','A'].forEach(l=>{const ps=PLANOS.filter(p=>p.caso===c&&p.l===l);
     ['vista','sección/alzado','croquis'].forEach(t=>{const p=ps.find(x=>x.t===t);if(p&&LAM.length<14)LAM.push(p)})}));
-  $('#tunZ').innerHTML=LAM.map(p=>`<figure><img loading="lazy" decoding="async" src="img/mini/${p.id}.webp" alt=""><figcaption>${nCaso(p.caso)} · ${p.l} · ${esc(p.t)}</figcaption></figure>`).join('');
+  $('#tunZ').innerHTML=LAM.map(p=>`<figure><img decoding="async" data-src="img/mini/${p.id}.webp" alt=""><figcaption>${nCaso(p.caso)} · ${p.l} · ${esc(p.t)}</figcaption></figure>`).join('');
   const FIG=$$('#tunZ figure'),PASOS=$$('#pasT li'),FRASES=$$('#v-inicio .tun-f li');
 
   // ---- Objetos de las aperturas, uno por sección ----
   const azar=(i,k)=>{const x=Math.sin(i*12.9898+k*78.233)*43758.5453;return x-Math.floor(x)};
   const VIS={
-    // Teoría: los trece criterios, en un anillo que gira (negro: la idea; borde: mecanismos; gris: precisión)
-    teoria:()=>{const K=TEORIA.criterios||[];return K.length?`<div class="anillo" style="--N:${K.length}">${K.map((k,i)=>`<div class="an-c n-${k.nivel}" style="--i:${i}"><b>${k.id}</b><span>${esc(k.nombre)}</span></div>`).join('')}</div>`:''},
+    // Teoría: los trece criterios empiezan apilados sobre la mesa y se reparten, uno a uno, en una rejilla donde se
+    // ven todos (negro: la idea; borde: los mecanismos; gris: la precisión)
+    teoria:()=>{const K=TEORIA.criterios||[];return K.length?`<div class="baraja">${K.map((k,i)=>`<div class="bj n-${k.nivel}"><b>${k.id}</b><span>${esc(k.nombre)}</span></div>`).join('')}</div>`:''},
     // Casos: las obras pasan como un carrusel en 3D; la del centro queda de frente
-    casos:()=>`<div class="cflow">${todos.slice().reverse().map(c=>`<a class="cf" href="#caso/${c}" tabindex="-1"><img loading="lazy" decoding="async" src="img/card/${FICHAS[c].card||c}.webp" alt=""><span><b>${nCaso(c)}</b> ${esc(nom(c))}</span></a>`).join('')}</div>`,
+    casos:()=>`<p class="cf-fase"></p><div class="cflow">${todos.slice().reverse().map(c=>`<a class="cf" href="#caso/${c}" tabindex="-1" data-fase="${esCB(c)?'Fase Campo Baeza':'Fase piloto'}"><img decoding="async" data-src="img/card/${FICHAS[c].card||c}.webp" alt=""><span><b>${nCaso(c)}</b> ${esc(nom(c))}</span></a>`).join('')}</div>`,
     // Planos: un muro de láminas tumbado, que se endereza mientras lo recorres
     planos:()=>{const P=PLANOS.filter(p=>p.t!=='otro'),n=Math.min(28,P.length),pa=P.length/n;
-      return `<div class="muro">${Array.from({length:n},(_,i)=>P[Math.floor(i*pa)]).map(p=>`<i><img loading="lazy" decoding="async" src="img/mini/${p.id}.webp" alt=""></i>`).join('')}</div>`},
+      return `<div class="muro">${Array.from({length:n},(_,i)=>P[Math.floor(i*pa)]).map(p=>`<i><img decoding="async" data-src="img/mini/${p.id}.webp" alt=""></i>`).join('')}</div>`},
     // Evolución: la planta de A y la de B se acercan y acaban superpuestas (A en rojo, B en azul)
     evolucion:()=>{const c=todos.filter(esCB).pop();if(!c)return '';const pl=l=>PLANOS.find(p=>p.caso===c&&p.l===l&&p.t==='planta');const a=pl('A'),b=pl('B');if(!a||!b)return '';
-      return `<div class="sup"><figure class="sA"><img loading="lazy" src="img/mini/${a.id}.webp" alt=""></figure><figure class="sB"><img loading="lazy" src="img/mini/${b.id}.webp" alt=""></figure></div><p class="sup-ley"><span><i class="pt pt-A"></i>A</span><span><i class="pt pt-B"></i>B</span>${nCaso(c)} · ${esc(nom(c))} · ${esc(a.n.split(' · ')[0].toLowerCase())}</p>`},
+      return `<div class="sup"><figure class="sA"><img data-src="img/mini/${a.id}.webp" alt=""></figure><figure class="sB"><img data-src="img/mini/${b.id}.webp" alt=""></figure></div><p class="sup-ley"><span><i class="pt pt-A"></i>A</span><span><i class="pt pt-B"></i>B</span>${nCaso(c)} · ${esc(nom(c))} · ${esc(a.n.split(' · ')[0].toLowerCase())}</p>`},
     // Método: los ocho pasos de una tanda como capas de una axonometría que se despiezan
     metodo:()=>{const ps=$$('#tMet .pasos li b').map(b=>b.textContent);return `<div class="axo" style="--N:${ps.length}">${ps.map((t,i)=>`<div class="axo-p" style="--i:${i}"><span>${String(i+1).padStart(2,'0')}</span><b>${esc(t)}</b></div>`).join('')}</div>`},
     // Resultados: cada propuesta vuela a su sitio en el gráfico de teoría frente a parecido
@@ -1522,7 +1530,7 @@ const ESC=(()=>{
   const hh=()=>$('header.top').offsetHeight+(parseFloat(getComputedStyle(H).getPropertyValue('--pav'))||0);
   let R=null,escenas=[],st=new Map(),s=0,sObj=0,raf=0,dx=0;
   const cara=$('#v-inicio .primera'),prog=document.createElement('i');prog.id='prog';prog.setAttribute('aria-hidden','true');$('header.top').appendChild(prog);
-  const lista=()=>{R=$$('main.vista').find(m=>!m.hidden)||null;escenas=R?[...R.querySelectorAll('[data-esc]')]:[];
+  const lista=()=>{R=$$('main.vista').find(m=>!m.hidden)||null;escenas=R?[...R.querySelectorAll('[data-esc]')]:[];if(R)R.querySelectorAll('img[data-src]').forEach(i=>{i.src=i.dataset.src;delete i.dataset.src});
     const n=new Map();escenas.forEach(e=>n.set(e,st.get(e)||{p:0,obj:0}));st=n};
   const mide=()=>{const t=$('#pasT');if(t){dx=Math.max(0,t.scrollWidth-t.parentElement.clientWidth);t.style.setProperty('--dx',dx+'px')}};
   const objetivos=()=>{const top=hh(),alto=innerHeight-top;
@@ -1533,7 +1541,17 @@ const ESC=(()=>{
   const flujo=(e,p)=>{const cs=e.querySelectorAll('.cf'),n=cs.length,m=innerWidth<700,G1=m?120:210,G2=m?34:70;
     cs.forEach((c,i)=>{const x=i-p*(n-1),ax=Math.abs(x),sg=Math.sign(x),pos=sg*(Math.min(ax,1)*G1+Math.max(0,ax-1)*G2);
       c.style.transform=`translate(-50%,-50%) translate3d(${pos.toFixed(1)}px,0,${(-Math.min(ax,1)*160-Math.max(0,ax-1)*30).toFixed(1)}px) rotateY(${(-Math.max(-1,Math.min(1,x))*58).toFixed(1)}deg)`;
-      c.style.opacity=ax>7?0:(1-Math.max(0,ax-5)/2).toFixed(3);c.style.zIndex=100-Math.round(ax*10);c.classList.toggle('on',ax<.5)})};
+      c.style.opacity=ax>7?0:(1-Math.max(0,ax-5)/2).toFixed(3);c.style.zIndex=100-Math.round(ax*10);c.classList.toggle('on',ax<.5)});
+    const f=e.querySelector('.cf-fase'),cen=cs[Math.round(p*(n-1))];if(f&&cen&&f.textContent!==cen.dataset.fase)f.textContent=cen.dataset.fase};
+  // Baraja de Teoría: de un mazo tumbado en el centro a una rejilla (5 columnas; 4 en el móvil), carta a carta
+  const baraja=(e,p)=>{const V=e.querySelector('.ab-vis'),cs=e.querySelectorAll('.bj');if(!V||!cs.length)return;const W=V.clientWidth,Hh=V.clientHeight,n=cs.length;
+    const col=W>560?5:4,fil=Math.ceil(n/col),g=W>560?14:8,cw=Math.min((W-g*(col-1))/col,((Hh-g*(fil-1))/fil)*.75),ch=cw/.75;
+    V.style.setProperty('--cw',cw.toFixed(1)+'px');V.style.setProperty('--ch',ch.toFixed(1)+'px');
+    const ancho=col*cw+(col-1)*g,alto=fil*ch+(fil-1)*g,x0=(W-ancho)/2,y0=(Hh-alto)/2;
+    cs.forEach((c,i)=>{const fi=Math.floor(i/col),enFila=Math.min(col,n-fi*col),xf=x0+(col-enFila)*(cw+g)/2+(i%col)*(cw+g),yf=y0+fi*(ch+g);
+      const xm=(W-cw)/2,ym=(Hh-ch)/2+Hh*.12,t=Math.min(1,Math.max(0,(p-.16-(n-1-i)*.028)/.3)),a=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+      const X=xm+(xf-xm)*a,Y=ym+(yf-ym)*a,Z=(1-a)*(n-i)*2.5+Math.sin(a*Math.PI)*140,rx=(1-a)*62,rz=(1-a)*((i%2?1:-1)*(2+i%4*1.6));
+      c.style.transform=`translate3d(${X.toFixed(1)}px,${Y.toFixed(1)}px,${Z.toFixed(1)}px) rotateX(${rx.toFixed(1)}deg) rotateZ(${rz.toFixed(1)}deg)`;c.style.zIndex=a>.5?200+i:n-i})};
   // Nube de errores: de una nube en 3D a una columna por caso y línea (negro: IA; gris: el autor)
   let NB=null;
   const nube=(e,p)=>{const cv=e.querySelector('canvas.nube');if(!cv)return;const W=cv.clientWidth,Hh=cv.clientHeight;if(!W||!Hh)return;const dpr=Math.min(2,devicePixelRatio||1);
@@ -1550,7 +1568,7 @@ const ESC=(()=>{
     x.globalAlpha=Math.max(0,(a-.75)*4);x.fillStyle='#6e6e6e';x.font='500 11px Inter, system-ui, sans-serif';x.textAlign='center';
     NB.cols.forEach(k=>x.fillText(`${nCaso(k.c)} ${k.l}`,k.cx,Hh-8));x.globalAlpha=1};
   const pinta=(e,p)=>{e.style.setProperty('--p',p.toFixed(4));const k=e.dataset.esc;
-    if(k==='ab'){if(e.dataset.vis==='casos')flujo(e,p);else if(e.dataset.vis==='aprendizaje')nube(e,p)}
+    if(k==='ab'){if(e.dataset.vis==='casos')flujo(e,p);else if(e.dataset.vis==='aprendizaje')nube(e,p);else if(e.dataset.vis==='teoria')baraja(e,p)}
     else if(k==='tun'){const W=e.querySelector('.tun').clientWidth,Hh=e.querySelector('.tun').clientHeight,D=Math.min(430,Math.max(240,W*.75)),n=FIG.length;
       FIG.forEach((f,i)=>{const z=-(i+1)*D+p*(n+1)*D,lado=i%2?1:-1,x=lado*W*(.2+(i%3)*.05),y=((i*7)%5-2)*Hh*.07;
         const op=z<-5*D?0:z<-4*D?(z+5*D)/D:z>160?0:z>-140?(160-z)/300:1;
@@ -1573,9 +1591,11 @@ const ESC=(()=>{
   const ahora=()=>{lista();mide();objetivos();if(QUIETO)return;st.forEach((v,e)=>{v.p=v.obj;v.ya=1;pinta(e,v.p)});s=sObj;if(R)R.style.setProperty('--s',s)};
   addEventListener('load',()=>{NB=null;ahora()});
   // Entradas en 3D: lo que aparece al bajar sube y se endereza, en cascada (solo la primera vez que se ve cada cosa)
-  const SEL='.lin-nota,.cc,.grid>.card,.pasos>li,.agentes>div,.lineas>div,.doc>div,.vmaj,.kpi,.lect>*,.tgr,.tbases>*,.tmide>*,.rp,.ideas>div,.real>figure,.glos>div,.eres>div,.egr>div,#eLista>.er,.tira>.it,.nums>a,.ini-res>*,.recorre>a,.vcard,.medias>div,.gq,.como,.clave,.filtros,.tabbar,#v-caso .w>h1,#v-caso .meta,#v-caso .mem,.burbuja';
-  const IOv='IntersectionObserver' in window&&!QUIETO?new IntersectionObserver(es=>{let k=0;es.forEach(e=>{if(e.isIntersecting){e.target.style.setProperty('--k',Math.min(k++,8));e.target.classList.add('vis');IOv.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px',threshold:.08}):null;
-  const marca=()=>{if(!IOv)return;$$('main.vista:not(.pnl):not([hidden])').forEach(v=>v.querySelectorAll(SEL).forEach(el=>{if(el.dataset.rv||el.closest('.pane[hidden],[hidden],.esc-ab'))return;el.dataset.rv=1;el.classList.add('rv');IOv.observe(el)}))};
+  const SEL='.cap,.lin-nota,.cc,.grid>.card,.pasos>li,.agentes>div,.lineas>div,.doc>div,.vmaj,.kpi,.lect>*,.tgr,.tbases>*,.tmide>*,.rp,.ideas>div,.real>figure,.glos>div,.eres>div,.egr>div,#eLista>.er,.tira>.it,.nums>a,.ini-res>*,.recorre>a,.vcard,.medias>div,.gq,.como,.clave,.filtros,.tabbar,#v-caso .w>h1,#v-caso .meta,#v-caso .mem,.burbuja';
+  const IOv='IntersectionObserver' in window&&!QUIETO?new IntersectionObserver(es=>{let k=0;es.forEach(e=>{if(e.isIntersecting){e.target.style.setProperty('--k',Math.min(k++,8));e.target.classList.add('vis');IOv.unobserve(e.target)}})},{rootMargin:'0px 0px 12% 0px',threshold:0}):null;
+  // Título de capítulo también para los apartados que se rellenan después (los que añade el panel a la ficha)
+  const capitulos=()=>INDICES.forEach(ix=>ix.panes.forEach((p,i)=>{if(p.hidden)p.hidden=false;if(!p.querySelector(':scope>.cap'))p.insertAdjacentHTML('afterbegin',`<div class="cap"><span class="n">${String(i+1).padStart(2,'0')}</span><h3>${esc(p.dataset.tab||'')}</h3></div>`)}));
+  const marca=()=>{capitulos();if(!IOv)return;$$('main.vista:not(.pnl):not([hidden])').forEach(v=>v.querySelectorAll(SEL).forEach(el=>{if(el.dataset.rv||el.closest('[hidden],.esc-ab'))return;el.dataset.rv=1;el.classList.add('rv');IOv.observe(el)}))};
   let mt=0;new MutationObserver(()=>{if(!mt)mt=requestAnimationFrame(()=>{mt=0;marca();const v=$$('main.vista').find(m=>!m.hidden)||null;if(v!==R)ahora()})}).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});
   // Portada de la ficha (sin apertura, con «reducir movimiento» no hay): se endereza conforme entra en pantalla
   addEventListener('scroll',()=>{const f=$('#v-caso:not([hidden]) .cport');if(!f||QUIETO)return;const r=f.getBoundingClientRect();
