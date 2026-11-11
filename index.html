@@ -300,6 +300,25 @@ canvas.nube{position:absolute;inset:0;width:100%;height:100%}
 @media(max-width:820px){.esc-caso .ab-c{padding-top:10px}.hoja img{height:auto;max-height:calc(100svh - var(--hh,60px) - 170px)}}
 #v-caso.con-ab .cport{display:none}
 #v-caso.con-ab .w>h1{font-size:clamp(30px,3.6vw,48px)}
+/* Seguir a la sección siguiente (v6.3) */
+.sigue{padding:120px 24px 130px;text-align:center;border-top:1px solid var(--li);margin-top:90px}
+.sigue[hidden]{display:none}
+.sig{display:inline-flex;flex-direction:column;align-items:center;gap:10px;text-decoration:none;max-width:100%}
+.sig .sk{font:600 11px/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--mu)}
+.sig b{font:300 clamp(40px,7vw,96px)/1.02 var(--sans);letter-spacing:-.045em;text-transform:uppercase;max-width:16ch}
+.sig:hover b{text-decoration:underline;text-underline-offset:10px;text-decoration-thickness:1px}
+.sar{width:52px;height:52px;margin-top:16px;display:block}
+.sar svg{width:100%;height:100%;fill:none;stroke:var(--tx);stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.sar .sc0{stroke:var(--li)}
+.sar .sc1{stroke-dasharray:138.3;stroke-dashoffset:138.3;transform:rotate(-90deg);transform-origin:24px 24px;transition:stroke-dashoffset .6s cubic-bezier(.2,.7,.2,1)}
+.sigue.armado .sc1{stroke-dashoffset:0}
+.sar path{animation:flecha 1.8s ease-in-out infinite}
+@keyframes flecha{50%{transform:translateY(4px)}}
+.sh{font:13px/1.4 var(--sans);color:var(--mu);opacity:.0;transition:opacity .3s}
+.sigue.armado .sh,.sig:hover .sh{opacity:1}
+@media(hover:none){.sh{opacity:.8}}
+/* Móvil: las escenas duran más (el dedo recorre más para el mismo movimiento) */
+@media(max-width:820px){.escena{height:calc(var(--h) * 1.5vh);height:calc(var(--h) * 1.5svh)}}
 /* Barra de avance: una línea bajo la cabecera que crece mientras bajas */
 #prog{position:absolute;left:0;right:0;bottom:-1px;height:1.5px;background:var(--tx);transform:scaleX(0);transform-origin:0 50%;pointer-events:none}
 /* Pestañas: el apartado nuevo llega girando un poco, como una hoja que se pasa */
@@ -319,7 +338,7 @@ header.top{view-transition-name:cabecera}
   .card:hover .im,.tira .it:hover .im,.real figure:hover .im{box-shadow:0 30px 50px -30px rgba(0,0,0,.35)}}
 html[data-tema=oscuro] .cf img,html[data-tema=oscuro] .muro i,html[data-tema=oscuro] .hoja img,html[data-tema=oscuro] .card:hover .im,html[data-tema=oscuro] .tira .it:hover .im,html[data-tema=oscuro] .real figure:hover .im{box-shadow:none}
 /* Sin movimiento (o al imprimir): las escenas se convierten en secciones normales, quietas y completas */
-html.quieto .escena{height:auto}
+html.quieto .escena{height:auto!important}
 html.quieto .esc-fijo{position:static;height:auto;overflow:visible;padding:70px 0}
 html.quieto .escena{--p:1}html.quieto .caratula,html.quieto .baja{transform:none;opacity:1}
 html.quieto .tun{display:none}html.quieto .tun-w{display:block}html.quieto .tun-f li{opacity:1;transform:none;margin:0 0 16px}html.quieto .tun-f{display:block}
@@ -1576,22 +1595,32 @@ const ESC=(()=>{
       const fase=Math.min(FRASES.length-1,Math.floor(p*FRASES.length*1.08));FRASES.forEach((li,i)=>{li.classList.toggle('on',i===fase);li.classList.toggle('ya',i<fase)})}
     else if(k==='pas'){const cx=innerWidth/2,x0=$('#pasT').parentElement.getBoundingClientRect().left-p*dx;PASOS.forEach(li=>{const d=Math.max(-1.6,Math.min(1.6,(x0+li.offsetLeft+li.offsetWidth/2-cx)/Math.max(320,innerWidth*.5)));
       li.style.transform=`translateZ(${(-Math.abs(d)*140).toFixed(1)}px) rotateY(${(-d*24).toFixed(1)}deg)`;li.style.opacity=(1-Math.min(.75,Math.abs(d)*.5)).toFixed(3)})}};
-  const paso=()=>{raf=0;if(!R||R.hidden)return;let sigue=false;const lerp=(a,b)=>Math.abs(b-a)<.0006?b:a+(b-a)*.16;
-    st.forEach((v,e)=>{const n=lerp(v.p,v.obj);if(n!==v.p||!v.ya){v.p=n;v.ya=1;pinta(e,n)}if(n!==v.obj)sigue=true});
+  // Móvil (v6.3): al entrar en una sección, su apertura se pone en marcha sola (el título se aparta y aparecen el texto
+  // y el objeto) y el dedo sigue desde ahí; además el gesto se suaviza más, para que nada pase demasiado deprisa.
+  const MOV=matchMedia('(max-width:820px)'),AUTO=.42;let t0=0,vistaAnt=null;
+  const auto=()=>{if(QUIETO||!MOV.matches)return AUTO;const k=Math.min(1,(performance.now()-t0)/1800);return AUTO*(1-Math.pow(1-k,3))};
+  const meta=(e,v,au)=>e.dataset.esc==='ab'&&MOV.matches?au+(1-au)*v.obj:v.obj;
+  const paso=()=>{raf=0;if(!R||R.hidden)return;let sigue=false;const f=MOV.matches?.09:.16,lerp=(a,b)=>Math.abs(b-a)<.0006?b:a+(b-a)*f,au=auto();if(au<AUTO)sigue=true;
+    st.forEach((v,e)=>{const m=meta(e,v,au),n=lerp(v.p,m);if(n!==v.p||!v.ya){v.p=n;v.ya=1;pinta(e,n)}if(n!==m)sigue=true});
     if(R.id==='v-inicio'){const ns=lerp(s,sObj);if(ns!==s){s=ns;R.style.setProperty('--s',s.toFixed(4))}if(s!==sObj)sigue=true}
     if(sigue)raf=requestAnimationFrame(paso)};
   const pide=()=>{if(!R||R.hidden)lista();objetivos();if(QUIETO)return;if(!raf)raf=requestAnimationFrame(paso)};
-  addEventListener('scroll',pide,{passive:true});addEventListener('resize',()=>{mide();NB=null;st.forEach(v=>v.ya=0);pide()});
+  addEventListener('scroll',pide,{passive:true});addEventListener('resize',()=>{mide();ajusta();NB=null;st.forEach(v=>v.ya=0);pide()});
   // «Desliza»: en el inicio, a la lámina ya levantada; en una apertura, directamente al contenido
   const baja=(e,f)=>{const alto=innerHeight-hh();window.scrollTo({top:e.getBoundingClientRect().top+scrollY-hh()+Math.max(0,e.offsetHeight-alto)*f+(f>=1?alto:0),behavior:QUIETO?'auto':'smooth'})};
   $('#baja').onclick=()=>baja($('#esc-lam'),.62);
   document.addEventListener('click',e=>{const b=e.target.closest('.ab-baja');if(b)baja(b.closest('.escena'),1)});
   document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('.hoja')){e.preventDefault();e.target.click()}});
   // Al cambiar de vista, las escenas se colocan donde toca sin animar desde cero
-  const ahora=()=>{lista();mide();objetivos();if(QUIETO)return;st.forEach((v,e)=>{v.p=v.obj;v.ya=1;pinta(e,v.p)});s=sObj;if(R)R.style.setProperty('--s',s)};
+  // Títulos enormes: si una palabra larga no cabe (RESULTADOS, APRENDIZAJE), se reduce hasta que quepa entera
+  const ajusta=()=>{if(!R)return;R.querySelectorAll('.esc-ab:not(.esc-caso) .ab-h').forEach(t=>{t.style.fontSize='';const w=t.clientWidth,s=t.scrollWidth;
+    if(w&&s>w)t.style.fontSize=(parseFloat(getComputedStyle(t).fontSize)*w/s*.96).toFixed(1)+'px'})};
+  const ahora=()=>{lista();mide();ajusta();objetivos();if(R!==vistaAnt){vistaAnt=R;t0=performance.now()}if(QUIETO)return;const au=auto();
+    st.forEach((v,e)=>{v.p=meta(e,v,au);v.ya=1;pinta(e,v.p)});s=sObj;if(R)R.style.setProperty('--s',s);if(!raf)raf=requestAnimationFrame(paso)};
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>ajusta());
   addEventListener('load',()=>{NB=null;ahora()});
   // Entradas en 3D: lo que aparece al bajar sube y se endereza, en cascada (solo la primera vez que se ve cada cosa)
-  const SEL='.cap,.lin-nota,.cc,.grid>.card,.pasos>li,.agentes>div,.lineas>div,.doc>div,.vmaj,.kpi,.lect>*,.tgr,.tbases>*,.tmide>*,.rp,.ideas>div,.real>figure,.glos>div,.eres>div,.egr>div,#eLista>.er,.tira>.it,.nums>a,.ini-res>*,.recorre>a,.vcard,.medias>div,.gq,.como,.clave,.filtros,.tabbar,#v-caso .w>h1,#v-caso .meta,#v-caso .mem,.burbuja';
+  const SEL='.sigue,.cap,.lin-nota,.cc,.grid>.card,.pasos>li,.agentes>div,.lineas>div,.doc>div,.vmaj,.kpi,.lect>*,.tgr,.tbases>*,.tmide>*,.rp,.ideas>div,.real>figure,.glos>div,.eres>div,.egr>div,#eLista>.er,.tira>.it,.nums>a,.ini-res>*,.recorre>a,.vcard,.medias>div,.gq,.como,.clave,.filtros,.tabbar,#v-caso .w>h1,#v-caso .meta,#v-caso .mem,.burbuja';
   const IOv='IntersectionObserver' in window&&!QUIETO?new IntersectionObserver(es=>{let k=0;es.forEach(e=>{if(e.isIntersecting){e.target.style.setProperty('--k',Math.min(k++,8));e.target.classList.add('vis');IOv.unobserve(e.target)}})},{rootMargin:'0px 0px 12% 0px',threshold:0}):null;
   // Título de capítulo también para los apartados que se rellenan después (los que añade el panel a la ficha)
   const capitulos=()=>INDICES.forEach(ix=>ix.panes.forEach((p,i)=>{if(p.hidden)p.hidden=false;if(!p.querySelector(':scope>.cap'))p.insertAdjacentHTML('afterbegin',`<div class="cap"><span class="n">${String(i+1).padStart(2,'0')}</span><h3>${esc(p.dataset.tab||'')}</h3></div>`)}));
@@ -1611,6 +1640,25 @@ const ESC=(()=>{
 $('#recorre').innerHTML=[['teoria','Teoría','Los trece criterios de Campo Baeza con los que se mide cada propuesta.'],['casos','Casos',`${todos.length} obras conocidas, su encargo y las propuestas que salieron de él.`],['planos','Planos',`Las ${PLANOS.length.toLocaleString('es')} láminas, con filtros por caso, propuesta y tipo.`],['evolucion','Evolución','Dos propuestas superpuestas, y el mismo plano a lo largo de los casos.'],['metodo','Método','Quién hace qué, cómo se evalúa a ciegas y cómo cambia el sistema.'],['resultados','Resultados','Cuánta teoría aplica cada propuesta y cuánto se parece a la obra.'],['aprendizaje','Aprendizaje','Cada error registrado y la mejora del método que produjo.']]
   .map(([h,t,d],i)=>`<a href="#${h}"><span class="n">${String(i+1).padStart(2,'0')}</span><b>${t}</b><span>${d}</span><span class="mas"></span></a>`).join('');
 const SECC={inicio:'',teoria:'Teoría',casos:'Casos',planos:'Planos',evolucion:'Evolución',metodo:'Método',resultados:'Resultados',aprendizaje:'Aprendizaje'};
+// ---------- Seguir (v6.3): al final de cada sección, la siguiente; todo el recorrido se puede hacer bajando ----------
+// Abajo del todo, un primer empujón más (rueda o dedo) prepara el paso y el segundo, seguido, pasa a la sección siguiente.
+const ORDEN=['inicio','teoria','casos','planos','evolucion','metodo','resultados','aprendizaje'];
+const sigueA=v=>{if(v==='caso'){const c=location.hash.split('/')[1],n=todos[todos.indexOf(c)+1];return n?{h:'#caso/'+n,t:nom(n),k:`Siguiente caso · ${nCaso(n)}`}:{h:'#casos',t:'Casos',k:'Volver a'}}
+  const i=ORDEN.indexOf(v);if(i<0)return null;const n=ORDEN[(i+1)%ORDEN.length];return n==='inicio'?{h:'#inicio',t:'Inicio',k:'Volver al'}:{h:'#'+n,t:SECC[n],k:'Seguir a'}};
+$$('main.vista').forEach(m=>{const v=m.id.slice(2);if(ORDEN.includes(v)||v==='caso')m.insertAdjacentHTML('beforeend',`<div class="sigue"><a class="sig" href="#"><span class="sk"></span><b></b><i class="sar" aria-hidden="true"><svg viewBox="0 0 48 48"><circle class="sc0" cx="24" cy="24" r="22"/><circle class="sc1" cx="24" cy="24" r="22"/><path d="M24 15v17M17 26l7 7 7-7"/></svg></i><span class="sh">Sigue bajando para pasar</span></a></div>`)});
+function pintaSigue(){const m=$$('main.vista').find(x=>!x.hidden),s=m&&m.querySelector(':scope>.sigue');if(!s)return;const d=sigueA(m.id.slice(2));s.classList.remove('armado');
+  if(!d){s.hidden=true;return}s.hidden=false;const a=s.querySelector('a');a.href=d.h;a.querySelector('.sk').textContent=d.k;a.querySelector('b').textContent=d.t;
+  a.setAttribute('aria-label',`${d.k} ${d.t}`);s.querySelector('.sh').textContent=`Sigue bajando para pasar`}
+{let arm=0,gesto=0,ty=null;
+ const abajo=()=>innerHeight+scrollY>=document.documentElement.scrollHeight-6;
+ const empuja=()=>{const m=$$('main.vista').find(x=>!x.hidden),s=m&&m.querySelector(':scope>.sigue:not([hidden])');if(!s||document.body.style.overflow==='hidden')return;
+   if(!s.classList.contains('armado')){s.classList.add('armado');s.querySelector('.sh').textContent=`Una vez más para pasar a ${s.querySelector('b').textContent}`;clearTimeout(arm);arm=setTimeout(()=>s.classList.remove('armado'),4000);return}
+   clearTimeout(arm);s.classList.remove('armado');location.hash=s.querySelector('a').getAttribute('href')};
+ // Rueda: cada gesto (una ráfaga de eventos) cuenta una vez, y solo si empieza ya abajo del todo
+ addEventListener('wheel',e=>{if(e.deltaY<=0)return;const t=performance.now(),nuevo=t-gesto>380;gesto=t;if(nuevo&&abajo())empuja()},{passive:true});
+ // Dedo: un arrastre hacia arriba de más de 50 px, empezado abajo del todo
+ addEventListener('touchstart',e=>{ty=abajo()?e.touches[0].clientY:null},{passive:true});
+ addEventListener('touchend',e=>{if(ty==null)return;const dy=ty-e.changedTouches[0].clientY;ty=null;if(dy>50&&abajo())empuja()},{passive:true});}
 
 // ---------- Casos ----------
 const tarjeta=c=>{const f=FICHAS[c];return `<a class="cc" href="#caso/${c}"><div class="im"><img loading="lazy" src="img/card/${f.card||c}.webp" alt="Planta de una propuesta para ${esc(nom(c))}"></div><div class="n">${nCaso(c)}</div><div class="o">${esc(nom(c))}</div><div class="m">${esc(f.arq)} · ${f.anio} · ${esc(cap(f.tip))}</div></a>`};
@@ -2338,7 +2386,7 @@ function ruta(){
   if(lam){F.caso=lam.caso;F.l='';F.t='';NG=PASO_G;$('#fCaso').value=lam.caso;pinta();const i=vis.indexOf(lam);
     if(i>=NG){NG=Math.ceil((i+1)/PASO_G)*PASO_G;pinta()}if(i>=0)requestAnimationFrame(()=>abre(vis.map(itemPlano),i))}
   altoCab();
-  window.scrollTo(0,0);requestAnimationFrame(ESC.ahora);ESC.marca();if(destino)requestAnimationFrame(()=>ve(destino));
+  pintaSigue();window.scrollTo(0,0);requestAnimationFrame(ESC.ahora);ESC.marca();if(destino)requestAnimationFrame(()=>ve(destino));
   // Un enlace a un estado concreto (#aprendizaje/CASO_020, #evolucion/CASO_021, #teoria/C3) va directo al contenido, sin la apertura
   else if(sub){const c=$('#v-'+h+'.con-ab>.w>.cab');if(c)requestAnimationFrame(()=>window.scrollTo(0,Math.max(0,c.getBoundingClientRect().top+scrollY-$('header.top').offsetHeight-12)))}
 }
