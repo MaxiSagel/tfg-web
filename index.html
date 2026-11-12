@@ -315,7 +315,7 @@ canvas.nube{position:absolute;inset:0;width:100%;height:100%}
 .sar .sc0{stroke:var(--li)}
 .sar .sc1{stroke-dasharray:138.3;stroke-dashoffset:138.3;transform:rotate(-90deg);transform-origin:24px 24px;transition:stroke-dashoffset .6s cubic-bezier(.2,.7,.2,1)}
 .sigue.armado .sc1{stroke-dashoffset:0}
-.sh{font:13px/1.4 var(--sans);color:var(--mu);opacity:.0;transition:opacity .3s}
+.sh{font:13px/1.4 var(--sans);color:var(--mu);opacity:.0;transition:opacity .3s;white-space:nowrap;height:1.4em}
 .sigue.armado .sh,.sig:hover .sh{opacity:1}
 @media(hover:none){.sh{opacity:.8}}
 /* Móvil: las escenas duran más (el dedo recorre más para el mismo movimiento) */
@@ -1659,14 +1659,17 @@ const SECC={inicio:'',teoria:'Teoría',casos:'Casos',planos:'Planos',evolucion:'
 const ORDEN=['inicio','teoria','casos','planos','evolucion','metodo','resultados','aprendizaje'];
 const sigueA=v=>{if(v==='caso'){const c=location.hash.split('/')[1],n=todos[todos.indexOf(c)+1];return n?{h:'#caso/'+n,t:nom(n),k:`Siguiente caso · ${nCaso(n)}`}:{h:'#casos',t:'Casos',k:'Volver a'}}
   const i=ORDEN.indexOf(v);if(i<0)return null;const n=ORDEN[(i+1)%ORDEN.length];return n==='inicio'?{h:'#inicio',t:'Inicio',k:'Volver al'}:{h:'#'+n,t:SECC[n],k:'Seguir a'}};
-$$('main.vista').forEach(m=>{const v=m.id.slice(2);if(ORDEN.includes(v)||v==='caso')m.insertAdjacentHTML('beforeend',`<div class="sigue"><a class="sig" href="#"><span class="sk"></span><b></b><i class="sar" aria-hidden="true"><svg viewBox="0 0 48 48"><circle class="sc0" cx="24" cy="24" r="22"/><circle class="sc1" cx="24" cy="24" r="22"/><path d="M24 15v17M17 26l7 7 7-7"/></svg></i><span class="sh">${QUIETO?'Pulsa para pasar':'Sigue bajando para pasar'}</span></a></div>`)});
+$$('main.vista').forEach(m=>{const v=m.id.slice(2);if(ORDEN.includes(v)||v==='caso')m.insertAdjacentHTML('beforeend',`<div class="sigue"><a class="sig" href="#"><span class="sk"></span><b></b><i class="sar" aria-hidden="true"><svg viewBox="0 0 48 48"><circle class="sc0" cx="24" cy="24" r="22"/><circle class="sc1" cx="24" cy="24" r="22"/><path d="M24 15v17M17 26l7 7 7-7"/></svg></i><span class="sh">Sigue bajando para pasar</span></a></div>`)});
 function pintaSigue(){const m=$$('main.vista').find(x=>!x.hidden),s=m&&m.querySelector(':scope>.sigue');if(!s)return;const d=sigueA(m.id.slice(2));s.classList.remove('armado');
   if(!d){s.hidden=true;return}s.hidden=false;const a=s.querySelector('a');a.href=d.h;a.querySelector('.sk').textContent=d.k;a.querySelector('b').textContent=d.t;
-  a.setAttribute('aria-label',`${d.k} ${d.t}`);s.querySelector('.sh').textContent=QUIETO?'Pulsa para pasar':`Sigue bajando para pasar`}
+  a.setAttribute('aria-label',`${d.k} ${d.t}`);s.querySelector('.sh').textContent=`Sigue bajando para pasar`}
 {let arm=0,gesto=0,ty=null;
- const abajo=()=>innerHeight+scrollY>=document.documentElement.scrollHeight-6;
+ // v6.8: margen de 24 px (con el zoom de Windows el desplazamiento no llega nunca al píxel exacto)
+ const abajo=()=>innerHeight+scrollY>=document.documentElement.scrollHeight-24;
+ // Dentro de una capa que se desplaza sola (ventana emergente, buscador, visor, menú) la rueda no pasa de sección
+ const enCapa=e=>!!(e.target&&e.target.closest&&e.target.closest('#pop.on,#bus.on,#lb.on,header.top.abierto #menu'));
  const empuja=()=>{const m=$$('main.vista').find(x=>!x.hidden),s=m&&m.querySelector(':scope>.sigue:not([hidden])');if(!s||document.body.style.overflow==='hidden')return;
-   if(!s.classList.contains('armado')){s.classList.add('armado');s.querySelector('.sh').textContent=`Una vez más para pasar a ${s.querySelector('b').textContent}`;clearTimeout(arm);arm=setTimeout(()=>s.classList.remove('armado'),4000);return}
+   if(!s.classList.contains('armado')){s.classList.add('armado');s.querySelector('.sh').textContent=`Una vez más para pasar a ${s.querySelector('b').textContent}`;clearTimeout(arm);arm=setTimeout(()=>s.classList.remove('armado'),6000);return}
    clearTimeout(arm);s.classList.remove('armado');para();location.hash=s.querySelector('a').getAttribute('href')};
  // Pausa en el título (v6.5): al llegar así a una sección, la página se queda quieta en su título. La inercia del
  // gesto no la arrastra; el primer gesto nuevo se absorbe y el segundo ya baja (pasados 2,5 s, basta con uno).
@@ -1683,10 +1686,11 @@ function pintaSigue(){const m=$$('main.vista').find(x=>!x.hidden),s=m&&m.querySe
  // La inercia del dedo (iOS sigue desplazando sin eventos táctiles): se sujeta arriba durante el primer segundo
  addEventListener('scroll',()=>{if(quieto&&performance.now()-quieto.t<1200&&scrollY>0)window.scrollTo(0,0)},{passive:true});
  addEventListener('keydown',()=>suelta());
- // Rueda: cada gesto (una ráfaga de eventos) cuenta una vez, y solo si empieza ya abajo del todo
- addEventListener('wheel',e=>{if(QUIETO||e.deltaY<=0||quieto)return;const t=performance.now(),nuevo=t-gesto>380;gesto=t;if(nuevo&&abajo())empuja()},{passive:true});
+ // Rueda: cada gesto (una ráfaga de eventos) cuenta una vez, y solo si empieza ya abajo del todo. Se escucha en la
+ // fase de captura de la ventana, así cuenta igual esté donde esté el ratón (v6.8; también en la web estática)
+ addEventListener('wheel',e=>{if(e.deltaY<=0||quieto||enCapa(e))return;const t=performance.now(),nuevo=t-gesto>380;gesto=t;if(nuevo&&abajo())empuja()},{passive:true,capture:true});
  // Dedo: un arrastre hacia arriba de más de 50 px, empezado abajo del todo
- addEventListener('touchstart',e=>{ty=!QUIETO&&abajo()?e.touches[0].clientY:null},{passive:true});
+ addEventListener('touchstart',e=>{ty=!enCapa(e)&&abajo()?e.touches[0].clientY:null},{passive:true});
  addEventListener('touchend',e=>{if(ty==null)return;const dy=ty-e.changedTouches[0].clientY;ty=null;if(dy>50&&abajo())empuja()},{passive:true});}
 
 // ---------- Casos ----------
