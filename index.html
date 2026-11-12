@@ -152,7 +152,7 @@ h3.sec .info{margin:0}
 .lam-t{font:300 clamp(26px,4.2vw,58px)/1.08 var(--sans);letter-spacing:-.035em;margin:0 auto;max-width:19ch}
 .lam3d{height:100%;display:flex;align-items:center;justify-content:center;perspective:1700px;perspective-origin:50% 0}
 .lam3d .hero{border:0;padding:0;width:100%;--a:clamp(0, calc(var(--p,0) * 1.75), 1);transform-origin:50% 85%;
-  transform:translateY(calc((1 - var(--a)) * 26vh)) rotateX(calc((1 - var(--a)) * 62deg)) scale(calc(.56 + var(--a) * .44))}
+  transform:translateY(calc((1 - var(--a)) * 8vh)) scale(calc(.86 + var(--a) * .14));opacity:calc(.35 + var(--a) * .65)}
 .lam3d .hv{width:auto;height:calc(100vh - var(--hh,60px) - 150px);height:calc(100svh - var(--hh,60px) - var(--pav,0px) - 150px);max-height:none;max-width:100%;margin:0 auto;border:1px solid var(--li);box-shadow:0 50px 90px -40px rgba(0,0,0,.35)}
 .lam3d .hpie{max-width:1000px;margin:14px auto 0;opacity:clamp(0, calc((var(--p,0) - .5) * 6), 1)}
 @media(max-width:820px){.lam3d .hv{height:auto;width:100%;max-height:calc(100svh - var(--hh,60px) - 190px)}.lam-k{top:5%}}
@@ -168,7 +168,7 @@ h3.sec .info{margin:0}
 .tun-f li.ya{opacity:0;transform:translateY(-26px)}
 .tun{position:relative;height:100%;perspective:900px;overflow:hidden}
 .tun-z{position:absolute;inset:0;transform-style:preserve-3d}
-.tun-z figure{position:absolute;left:50%;top:50%;width:min(26vw,360px);margin:0;background:#fff;border:1px solid var(--li);box-shadow:0 30px 60px -30px rgba(0,0,0,.3);opacity:0;will-change:transform,opacity;backface-visibility:hidden}
+.tun-z figure{position:absolute;left:50%;top:50%;width:min(34vw,460px);margin:0;background:#fff;border:1px solid var(--li);box-shadow:0 30px 60px -30px rgba(0,0,0,.3);opacity:0;will-change:transform,opacity;backface-visibility:hidden}
 .tun-z img{display:block;width:100%;height:auto}
 .tun-z figcaption{font:500 10.5px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--mu);padding:8px 10px;border-top:1px solid var(--li)}
 @media(max-width:820px){.tun-w{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);gap:10px;padding-top:26px;padding-bottom:10px}.tun-z figure{width:min(62vw,300px)}.tun-f li{font-size:19px}}
@@ -176,8 +176,8 @@ h3.sec .info{margin:0}
 .lin-t{font:300 clamp(22px,2.7vw,36px)/1.22 var(--sans);letter-spacing:-.02em;margin:0 0 34px;max-width:28ch}
 .lin2{display:grid;grid-template-columns:1fr 1fr;gap:28px;perspective:1400px}
 .lin-c{display:block;text-decoration:none;border:1px solid var(--tx);padding:30px 34px 34px;background:#fff;--a:clamp(0, calc(var(--p,0) * 2.1 - .05), 1);opacity:calc(.15 + var(--a))}
-.lin-a{transform-origin:100% 50%;transform:translateX(calc((1 - var(--a)) * -22%)) rotateY(calc((1 - var(--a)) * 58deg))}
-.lin-b{transform-origin:0 50%;transform:translateX(calc((1 - var(--a)) * 22%)) rotateY(calc((1 - var(--a)) * -58deg))}
+.lin-a{transform:translateX(calc((1 - var(--a)) * -5%))}
+.lin-b{transform:translateX(calc((1 - var(--a)) * 5%))}
 .lin-c .ln-l{display:block;font:300 clamp(64px,8.5vw,128px)/.9 var(--sans);letter-spacing:-.05em}
 .lin-c b{display:flex;align-items:center;font:500 22px/1.2 var(--sans);letter-spacing:-.015em;margin:18px 0 8px}
 .lin-c:hover b{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
@@ -204,19 +204,18 @@ h3.sec .info{margin:0}
 .recorre .mas{position:relative;top:auto;right:auto;align-self:center}
 .recorre a:hover b{text-decoration:underline;text-underline-offset:8px;text-decoration-thickness:1px}
 @media(max-width:700px){.recorre a{grid-template-columns:34px minmax(0,1fr) 20px;padding:18px 0}.recorre span:not(.n):not(.mas){grid-column:2/4;grid-row:2}.recorre .mas{grid-column:3;grid-row:1}}
-/* Entrada en 3D de lo que aparece al bajar (todas las secciones): sube, se endereza y se enciende, en cascada */
-.rv{opacity:0;transform:perspective(1100px) translateY(36px) rotateX(14deg);transform-origin:50% 100%;transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--k,0) * 60ms)}
+/* Entrada de lo que aparece al bajar (v6.7, sobria): un fundido con un desplazamiento corto, en cascada breve */
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .7s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--k,0) * 40ms)}
 .rv.vis{opacity:1;transform:none}
 /* Títulos de sección: suben desde detrás de una línea */
 .cab h2{animation:titulo 1s cubic-bezier(.2,.7,.2,1) backwards}
 .cab+.lead,#v-caso h1{animation:ap .9s .12s cubic-bezier(.2,.7,.2,1) backwards}
 @keyframes titulo{from{clip-path:inset(100% -20% -30% -20%);transform:translateY(.4em)}to{clip-path:inset(-40% -20% -30% -20%);transform:none}}
-/* Tarjetas de los casos: se inclinan hacia el puntero, como una lámina que se coge con la mano */
-@media(hover:hover) and (pointer:fine){.cc .im{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .5s cubic-bezier(.2,.7,.2,1),border-color .25s,box-shadow .4s}
-  .cc:hover .im{box-shadow:0 30px 50px -30px rgba(0,0,0,.35)}}
+/* Tarjetas de los casos (v6.7): ya no se inclinan hacia el puntero; al pasar, solo se marca el borde */
+@media(hover:hover) and (pointer:fine){.cc:hover .im{border-color:var(--tx)}}
 /* Portada de la ficha: se endereza al entrar */
 .cport{perspective:1500px}
-.cport .im{transform-origin:50% 100%;transform:rotateX(calc((1 - var(--e,1)) * 24deg)) scale(calc(.94 + var(--e,1) * .06))}
+.cport .im{opacity:calc(.4 + var(--e,1) * .6);transform:translateY(calc((1 - var(--e,1)) * 16px))}
 /* ---------- Aperturas de sección (v6.1): cada sección y cada caso abre con su propia escena ----------
    El título enorme se aparta hacia arriba; el texto de entrada se enciende palabra a palabra y, al lado, un objeto en
    3D cuenta de qué va la sección. Al acabar la escena empieza el contenido de siempre (pestañas, filtros, gráficos). */
@@ -242,9 +241,9 @@ main.vista{overflow-x:clip}
 @media(max-width:820px){.ab-c{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);gap:18px;align-content:stretch;padding:26px 0 70px}
   .sin-vis .ab-c{grid-template-rows:1fr;align-content:center}
   .ab-lead{font-size:clamp(19px,5vw,24px)!important}.ab-vis{height:100%}.ab-tit{left:18px;right:18px}.ab-c{left:18px;right:18px}.ab-baja{left:18px}}
-/* Teoría: baraja de criterios (la coloca el programa) */
-.baraja{position:absolute;inset:0;perspective:1300px}
-.bj{position:absolute;left:0;top:0;width:var(--cw,120px);height:var(--ch,160px);border:1px solid var(--tx);background:#fff;padding:calc(var(--cw,120px) * .09);display:flex;flex-direction:column;justify-content:space-between;will-change:transform;box-shadow:0 18px 30px -22px rgba(0,0,0,.35)}
+/* Teoría: los criterios aparecen en orden en su rejilla (los coloca el programa) */
+.baraja{position:absolute;inset:0}
+.bj{position:absolute;left:0;top:0;width:var(--cw,120px);height:var(--ch,160px);border:1px solid var(--tx);background:#fff;padding:calc(var(--cw,120px) * .09);display:flex;flex-direction:column;justify-content:space-between;will-change:transform,opacity}
 .bj b{font:300 calc(var(--cw,120px) * .3)/1 var(--sans);letter-spacing:-.04em}.bj span{font:500 calc(var(--cw,120px) * .095)/1.25 var(--sans)}
 .bj.n-idea{background:var(--tx);color:#fff}.bj.n-precision{border-color:#bdbdbd;color:#555}
 html[data-tema=oscuro] .bj{box-shadow:none}
@@ -260,7 +259,7 @@ html[data-tema=oscuro] .bj{box-shadow:none}
 .esc-ab[data-vis=casos] .ab-vis,.tun{-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
 /* Planos: muro de láminas */
 .muro{position:absolute;left:50%;top:50%;width:1500px;display:grid;grid-template-columns:repeat(7,1fr);gap:18px;transform-style:preserve-3d;
-  transform:translate(-50%,-50%) rotateX(calc(56deg - var(--p,0) * 30deg)) rotateZ(calc(-32deg + var(--p,0) * 16deg)) translate3d(calc(var(--p,0) * -320px + 120px), calc(var(--p,0) * 200px - 140px), 0)}
+  transform:translate(-50%,-50%) rotateX(45deg) rotateZ(-30deg) translate3d(calc(var(--p,0) * -220px + 80px), calc(var(--p,0) * 140px - 90px), 0)}
 .muro i{display:block;aspect-ratio:700/570;background:#fff;border:1px solid var(--li);box-shadow:0 20px 30px -24px rgba(0,0,0,.35)}
 .muro img{display:block;width:100%;height:100%;object-fit:contain}
 .esc-ab[data-vis=planos] .ab-vis{-webkit-mask-image:radial-gradient(ellipse at center,#000 55%,transparent 80%);mask-image:radial-gradient(ellipse at center,#000 55%,transparent 80%)}
@@ -269,13 +268,13 @@ html[data-tema=oscuro] .bj{box-shadow:none}
 .sup{position:absolute;inset:7% 7% 18%;isolation:isolate}
 .sup figure{position:absolute;top:0;bottom:0;width:56%;margin:0;background:#fff;--a:clamp(0, calc((var(--p,0) - .22) * 1.9), 1)}
 .sup img{display:block;width:100%;height:100%;object-fit:contain}
-.sA{left:0;transform-origin:100% 50%;transform:perspective(1000px) translateX(calc(var(--a) * 39.3%)) rotateY(calc((1 - var(--a)) * 22deg));border:1px solid var(--li)}
-.sB{right:0;transform-origin:0 50%;transform:perspective(1000px) translateX(calc(var(--a) * -39.3%)) rotateY(calc((1 - var(--a)) * -22deg));mix-blend-mode:multiply;border:1px solid var(--li)}
+.sA{left:0;transform:translateX(calc(var(--a) * 39.3%));border:1px solid var(--li)}
+.sB{right:0;transform:translateX(calc(var(--a) * -39.3%));mix-blend-mode:multiply;border:1px solid var(--li)}
 .sA img{filter:url(#tintA)}.sB img{filter:url(#tintB)}
 .sup-ley{position:absolute;left:0;right:0;bottom:2%;margin:0;text-align:center;font:500 12.5px var(--sans);color:var(--mu);opacity:clamp(0, calc((var(--p,0) - .6) * 5), 1)}
 .sup-ley span{display:inline-flex;align-items:center;margin-right:14px;color:var(--tx)}
 /* Método: axonometría despiezada */
-.axo{position:absolute;left:50%;top:64%;width:0;height:0;transform-style:preserve-3d;transform:rotateX(58deg) rotateZ(calc(-44deg + var(--p,0) * 24deg))}
+.axo{position:absolute;left:50%;top:64%;width:0;height:0;transform-style:preserve-3d;transform:rotateX(58deg) rotateZ(-38deg)}
 .axo-p{position:absolute;width:250px;height:250px;left:-125px;top:-125px;border:1px solid var(--tx);background:rgba(255,255,255,.88);padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;
   transform:translateZ(calc(var(--i) * (5px + clamp(0, calc((var(--p,0) - .15) * 1.5), 1) * 36px)))}
 .axo-p span{font:500 11px var(--sans);letter-spacing:.1em;color:var(--mu)}.axo-p b{font:500 17px/1.2 var(--sans);letter-spacing:-.01em}
@@ -289,7 +288,7 @@ html[data-tema=oscuro] .bj{box-shadow:none}
 .dlx,.dly{position:absolute;font:500 11.5px var(--sans);color:var(--mu);opacity:clamp(0, calc((var(--p,0) - .2) * 4), 1)}
 .dlx{right:0;bottom:-26px}.dly{left:-14px;bottom:0;transform:rotate(-90deg);transform-origin:0 0;white-space:nowrap}
 .dp{position:absolute;width:0;height:0;--a:clamp(0, calc((var(--p,0) - .2 - var(--r) * .2) * 2.4), 1);
-  transform:translate3d(calc((1 - var(--a)) * var(--dx)), calc((1 - var(--a)) * var(--dy)), calc((1 - var(--a)) * var(--dz)));opacity:calc(.25 + var(--a))}
+  transform:translateY(calc((1 - var(--a)) * 18px));opacity:var(--a)}
 .dp .pt{position:absolute;width:15px;height:15px;left:-7.5px;top:-7.5px;margin:0}
 .dley{position:absolute;left:0;top:-30px;margin:0;display:flex;gap:18px;font:500 12px var(--sans);opacity:clamp(0, calc((var(--p,0) - .6) * 5), 1)}.dley span{display:inline-flex;align-items:center}
 /* Aprendizaje: nube de errores */
@@ -298,7 +297,7 @@ canvas.nube{position:absolute;inset:0;width:100%;height:100%}
 .esc-caso .ab-h{white-space:normal;font-size:clamp(40px,min(8vw,13vh),130px);max-width:13ch;line-height:.9}
 .esc-caso .ab-tit{--a:clamp(0, calc(var(--p,0) * 3), 1)}
 .esc-caso .ab-c{grid-template-columns:1fr;justify-items:center;perspective:1700px;--b:clamp(0, calc((var(--p,0) - .1) * 4), 1)}
-.hoja{margin:0;cursor:zoom-in;transform-origin:50% 85%;--e:clamp(0, calc((var(--p,0) - .12) * 1.7), 1);transform:translateY(calc((1 - var(--e)) * 28vh)) rotateX(calc((1 - var(--e)) * 60deg)) scale(calc(.55 + var(--e) * .45))}
+.hoja{margin:0;cursor:zoom-in;--e:clamp(0, calc((var(--p,0) - .12) * 1.7), 1);transform:translateY(calc((1 - var(--e)) * 8vh)) scale(calc(.86 + var(--e) * .14));opacity:calc(.3 + var(--e) * .7)}
 .hoja img{display:block;height:calc(100vh - var(--hh,60px) - 130px);height:calc(100svh - var(--hh,60px) - var(--pav,0px) - 130px);width:auto;max-width:100%;object-fit:contain;background:#fff;border:1px solid var(--li);box-shadow:0 50px 90px -40px rgba(0,0,0,.35);margin:0 auto}
 .hoja figcaption{font:12px/1.4 var(--sans);color:var(--mu);margin-top:10px;text-align:center;opacity:clamp(0, calc((var(--p,0) - .55) * 5), 1)}
 @media(max-width:820px){.esc-caso .ab-c{padding-top:10px}.hoja img{height:auto;max-height:calc(100svh - var(--hh,60px) - 170px)}}
@@ -316,8 +315,6 @@ canvas.nube{position:absolute;inset:0;width:100%;height:100%}
 .sar .sc0{stroke:var(--li)}
 .sar .sc1{stroke-dasharray:138.3;stroke-dashoffset:138.3;transform:rotate(-90deg);transform-origin:24px 24px;transition:stroke-dashoffset .6s cubic-bezier(.2,.7,.2,1)}
 .sigue.armado .sc1{stroke-dashoffset:0}
-.sar path{animation:flecha 1.8s ease-in-out infinite}
-@keyframes flecha{50%{transform:translateY(4px)}}
 .sh{font:13px/1.4 var(--sans);color:var(--mu);opacity:.0;transition:opacity .3s}
 .sigue.armado .sh,.sig:hover .sh{opacity:1}
 @media(hover:none){.sh{opacity:.8}}
@@ -325,21 +322,20 @@ canvas.nube{position:absolute;inset:0;width:100%;height:100%}
 @media(max-width:820px){.escena{height:calc(var(--h) * 1.5vh);height:calc(var(--h) * 1.5svh)}}
 /* Barra de avance: una línea bajo la cabecera que crece mientras bajas */
 #prog{position:absolute;left:0;right:0;bottom:-1px;height:1.5px;background:var(--tx);transform:scaleX(0);transform-origin:0 50%;pointer-events:none}
-/* Pestañas: el apartado nuevo llega girando un poco, como una hoja que se pasa */
+/* Capítulos: la línea se dibuja y el título sube desde detrás de ella */
 .rv.cap{opacity:1;transform:none}
 .rv.cap::before{transform:scaleX(0);transition:transform 1.3s cubic-bezier(.2,.7,.2,1)}
-.rv.cap h3,.rv.cap .n{display:inline-block;opacity:0;transform:translateY(70%) rotateX(-40deg);transform-origin:50% 100%;transition:opacity .8s ease .15s,transform 1.1s cubic-bezier(.2,.7,.2,1) .15s}
+.rv.cap h3,.rv.cap .n{display:inline-block;opacity:0;transform:translateY(60%);transition:opacity .6s ease .1s,transform .8s cubic-bezier(.2,.7,.2,1) .1s}
 .rv.cap.vis::before{transform:none}.rv.cap.vis h3,.rv.cap.vis .n{opacity:1;transform:none}
-/* Cambio de sección: la vista que se va se hunde y la nueva sube (View Transitions, donde el navegador las tiene) */
+/* Cambio de sección (v6.7): un fundido breve (View Transitions, donde el navegador las tiene) */
 header.top{view-transition-name:cabecera}
-::view-transition-old(root){animation:vtSale .42s cubic-bezier(.4,0,.2,1) both}
-::view-transition-new(root){animation:vtEntra .62s cubic-bezier(.2,.7,.2,1) both}
-@keyframes vtSale{to{opacity:0;transform:perspective(1400px) translateZ(-140px) rotateX(5deg)}}
-@keyframes vtEntra{from{opacity:0;transform:perspective(1400px) translateY(70px) rotateX(-7deg)}}
+::view-transition-old(root){animation:vtSale .2s ease both}
+::view-transition-new(root){animation:vtEntra .35s ease both}
+@keyframes vtSale{to{opacity:0}}
+@keyframes vtEntra{from{opacity:0;transform:translateY(10px)}}
 @media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
-/* Láminas que se inclinan hacia el puntero (ver ESC) */
-@media(hover:hover) and (pointer:fine){.card .im,.tira .it .im,.real .im{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .5s cubic-bezier(.2,.7,.2,1),border-color .25s,box-shadow .4s}
-  .card:hover .im,.tira .it:hover .im,.real figure:hover .im{box-shadow:0 30px 50px -30px rgba(0,0,0,.35)}}
+/* Láminas (v6.7): al pasar el puntero solo se marca el borde; nada se inclina */
+@media(hover:hover) and (pointer:fine){.card:hover .im,.tira .it:hover .im,.real figure:hover .im{border-color:var(--tx)}}
 html[data-tema=oscuro] .cf img,html[data-tema=oscuro] .muro i,html[data-tema=oscuro] .hoja img,html[data-tema=oscuro] .card:hover .im,html[data-tema=oscuro] .tira .it:hover .im,html[data-tema=oscuro] .real figure:hover .im{box-shadow:none}
 /* Sin movimiento (o al imprimir): las escenas se convierten en secciones normales, quietas y completas */
 html.quieto .escena{height:auto!important}
@@ -1525,12 +1521,12 @@ const ESC=(()=>{
   // ---- Objetos de las aperturas, uno por sección ----
   const azar=(i,k)=>{const x=Math.sin(i*12.9898+k*78.233)*43758.5453;return x-Math.floor(x)};
   const VIS={
-    // Teoría: los trece criterios empiezan apilados sobre la mesa y se reparten, uno a uno, en una rejilla donde se
-    // ven todos (negro: la idea; borde: los mecanismos; gris: la precisión)
+    // Teoría (v6.7): los trece criterios aparecen uno a uno, en orden, en la rejilla donde se ven todos
+    // (negro: la idea; borde: los mecanismos; gris: la precisión)
     teoria:()=>{const K=TEORIA.criterios||[];return K.length?`<div class="baraja">${K.map((k,i)=>`<div class="bj n-${k.nivel}"><b>${k.id}</b><span>${esc(k.nombre)}</span></div>`).join('')}</div>`:''},
-    // Casos: las obras pasan como un carrusel en 3D; la del centro queda de frente
+    // Casos (v6.7): las obras pasan en una tira plana, en orden; la del centro, entera
     casos:()=>`<p class="cf-fase"></p><div class="cflow">${todos.slice().reverse().map(c=>`<a class="cf" href="#caso/${c}" tabindex="-1" data-fase="${esCB(c)?'Fase Campo Baeza':'Fase piloto'}"><img decoding="async" data-src="img/card/${FICHAS[c].card||c}.webp" alt=""><span><b>${nCaso(c)}</b> ${esc(nom(c))}</span></a>`).join('')}</div>`,
-    // Planos: un muro de láminas tumbado, que se endereza mientras lo recorres
+    // Planos: un muro de láminas en axonometría fija que se recorre despacio
     planos:()=>{const P=PLANOS.filter(p=>p.t!=='otro'),n=Math.min(28,P.length),pa=P.length/n;
       return `<div class="muro">${Array.from({length:n},(_,i)=>P[Math.floor(i*pa)]).map(p=>`<i><img decoding="async" data-src="img/mini/${p.id}.webp" alt=""></i>`).join('')}</div>`},
     // Evolución: la planta de A y la de B se acercan y acaban superpuestas (A en rojo, B en azul)
@@ -1538,11 +1534,11 @@ const ESC=(()=>{
       return `<div class="sup"><figure class="sA"><img data-src="img/mini/${a.id}.webp" alt=""></figure><figure class="sB"><img data-src="img/mini/${b.id}.webp" alt=""></figure></div><p class="sup-ley"><span><i class="pt pt-A"></i>A</span><span><i class="pt pt-B"></i>B</span>${nCaso(c)} · ${esc(nom(c))} · ${esc(a.n.split(' · ')[0].toLowerCase())}</p>`},
     // Método: los ocho pasos de una tanda como capas de una axonometría que se despiezan
     metodo:()=>{const ps=$$('#tMet .pasos li b').map(b=>b.textContent);return `<div class="axo" style="--N:${ps.length}">${ps.map((t,i)=>`<div class="axo-p" style="--i:${i}"><span>${String(i+1).padStart(2,'0')}</span><b>${esc(t)}</b></div>`).join('')}</div>`},
-    // Resultados: cada propuesta vuela a su sitio en el gráfico de teoría frente a parecido
+    // Resultados (v6.7): los ejes se dibujan y cada propuesta aparece en su sitio del gráfico de teoría frente a parecido
     resultados:()=>{const cs=RESULTADOS.casos.filter(c=>esCB(c.caso)),pts=[];cs.forEach(c=>['A','B'].forEach(l=>{const f=c['f'+l.toLowerCase()],s=c[l.toLowerCase()];if(f!=null&&s!=null)pts.push({c:c.caso,l,f,s})}));
       if(!pts.length)return '';const x0=Math.min(50,Math.floor((Math.min(...pts.map(q=>q.f))-5)/10)*10),X=v=>(v-x0)/(100-x0)*100,zx=X((x0+100)/2);
       return `<div class="disp"><i class="dz" style="left:${zx}%"><span>Lo buscado: mucha teoría, poco parecido</span></i><i class="dax"></i><span class="dlx">Aplica la teoría →</span><span class="dly">Se parece a la obra →</span>${pts.map((q,i)=>`<i class="dp" style="left:${X(q.f)}%;bottom:${q.s/5*100}%;--dx:${Math.round((azar(i,1)-.5)*900)}px;--dy:${Math.round((azar(i,2)-.5)*700)}px;--dz:${Math.round(azar(i,3)*-900)}px;--r:${(i%5)/10}"><i class="pt pt-${q.l}"></i></i>`).join('')}<p class="dley"><span><i class="pt pt-A"></i>A · solo IA</span><span><i class="pt pt-B"></i>B · IA + humano</span></p></div>`},
-    // Aprendizaje: cada error registrado es un punto; la nube se ordena en una columna por caso y línea
+    // Aprendizaje (v6.7): cada error registrado es un punto; las columnas por caso y línea crecen de abajo arriba
     aprendizaje:()=>`<canvas class="nube"></canvas>`
   };
   const NUM={teoria:1,casos:2,planos:3,evolucion:4,metodo:5,resultados:6,aprendizaje:7};
@@ -1575,45 +1571,44 @@ const ESC=(()=>{
     escenas.forEach(e=>{const r=e.getBoundingClientRect(),rec=Math.max(1,r.height-alto);st.get(e).obj=Math.min(1,Math.max(0,(top-r.top)/rec))});
     sObj=R&&R.id==='v-inicio'?Math.min(1,Math.max(0,scrollY/Math.max(1,cara.offsetHeight*.75))):0;
     prog.style.transform=`scaleX(${Math.min(1,Math.max(0,scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight))).toFixed(4)})`};
-  // Carrusel de casos: posición de cada obra según lo bajado
-  const flujo=(e,p)=>{const cs=e.querySelectorAll('.cf'),n=cs.length,m=innerWidth<700,G1=m?100:210,G2=m?30:70;
-    cs.forEach((c,i)=>{const x=i-p*(n-1),ax=Math.abs(x),sg=Math.sign(x),pos=sg*(Math.min(ax,1)*G1+Math.max(0,ax-1)*G2);
-      c.style.transform=`translate(-50%,-50%) translate3d(${pos.toFixed(1)}px,0,${(-Math.min(ax,1)*160-Math.max(0,ax-1)*30).toFixed(1)}px) rotateY(${(-Math.max(-1,Math.min(1,x))*58).toFixed(1)}deg)`;
+  // Tira de casos: posición de cada obra según lo bajado
+  const flujo=(e,p)=>{const cs=e.querySelectorAll('.cf'),n=cs.length,m=innerWidth<700,G1=((cs[0]&&cs[0].offsetWidth)||250)+(m?16:32);
+    cs.forEach((c,i)=>{const x=i-p*(n-1),ax=Math.abs(x),pos=x*G1;
+      c.style.transform=`translate(-50%,-50%) translateX(${pos.toFixed(1)}px) scale(${(1-Math.min(ax,1)*.08).toFixed(3)})`;
       const a0=m?.6:1.3,a1=m?1.5:2.7;c.style.opacity=Math.max(0,1-Math.max(0,ax-a0)/(a1-a0)).toFixed(3);c.style.visibility=ax>a1?'hidden':'';c.style.zIndex=100-Math.round(ax*10);c.classList.toggle('on',ax<.5)});
     const f=e.querySelector('.cf-fase'),cen=cs[Math.round(p*(n-1))];if(f&&cen&&f.textContent!==cen.dataset.fase)f.textContent=cen.dataset.fase};
-  // Baraja de Teoría: de un mazo tumbado en el centro a una rejilla (5 columnas; 4 en el móvil), carta a carta
+  // Criterios de Teoría: rejilla (5 columnas; 4 en el móvil) que se completa en orden, uno a uno
   const baraja=(e,p)=>{const V=e.querySelector('.ab-vis'),cs=e.querySelectorAll('.bj');if(!V||!cs.length)return;const W=V.clientWidth,Hh=V.clientHeight,n=cs.length;
     const col=W>560?5:4,fil=Math.ceil(n/col),g=W>560?14:8,cw=Math.min((W-g*(col-1))/col,((Hh-g*(fil-1))/fil)*.75),ch=cw/.75;
     V.style.setProperty('--cw',cw.toFixed(1)+'px');V.style.setProperty('--ch',ch.toFixed(1)+'px');
     const ancho=col*cw+(col-1)*g,alto=fil*ch+(fil-1)*g,x0=(W-ancho)/2,y0=(Hh-alto)/2;
     cs.forEach((c,i)=>{const fi=Math.floor(i/col),enFila=Math.min(col,n-fi*col),xf=x0+(col-enFila)*(cw+g)/2+(i%col)*(cw+g),yf=y0+fi*(ch+g);
-      const xm=(W-cw)/2,ym=(Hh-ch)/2+Hh*.12,t=Math.min(1,Math.max(0,(p-.16-(n-1-i)*.028)/.3)),a=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
-      const X=xm+(xf-xm)*a,Y=ym+(yf-ym)*a,Z=(1-a)*(n-i)*2.5+Math.sin(a*Math.PI)*140,rx=(1-a)*62,rz=(1-a)*((i%2?1:-1)*(2+i%4*1.6));
-      c.style.transform=`translate3d(${X.toFixed(1)}px,${Y.toFixed(1)}px,${Z.toFixed(1)}px) rotateX(${rx.toFixed(1)}deg) rotateZ(${rz.toFixed(1)}deg)`;c.style.zIndex=a>.5?200+i:n-i})};
-  // Nube de errores: de una nube en 3D a una columna por caso y línea (negro: IA; gris: el autor)
+      const t=Math.min(1,Math.max(0,(p-.16-i*.028)/.16)),a=1-Math.pow(1-t,3);
+      c.style.transform=`translate(${xf.toFixed(1)}px,${(yf+(1-a)*14).toFixed(1)}px)`;c.style.opacity=a.toFixed(3)})};
+  // Errores: una columna por caso y línea que crece de abajo arriba (negro: IA; gris: el autor)
   let NB=null;
   const nube=(e,p)=>{const cv=e.querySelector('canvas.nube');if(!cv)return;const W=cv.clientWidth,Hh=cv.clientHeight;if(!W||!Hh)return;const dpr=Math.min(2,devicePixelRatio||1);
     if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(Hh*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(Hh*dpr)}
     if(!NB||NB.W!==W||NB.H!==Hh){const cols=[];todos.forEach(c=>['A','B','C'].forEach(l=>{const q=ERRORES.filter(x=>x.caso===c&&x.l===l);if(q.length)cols.push({c,l,q:q.sort((a,b)=>(a.o==='humano')-(b.o==='humano'))})}));
       const nc=cols.length,gap=Math.min(26,W/nc*.35),cw=(W-gap*(nc-1))/nc,mx=Math.max(...cols.map(k=>k.q.length)),pc=6,cel=Math.max(2,Math.min(cw/pc,(Hh-34)/Math.ceil(mx/pc)));
-      const P=[];cols.forEach((k,j)=>{const x0=j*(cw+gap)+(cw-cel*pc)/2;k.q.forEach((er,i)=>{const n=P.length;P.push({x:x0+(i%pc)*cel,y:Hh-28-(Math.floor(i/pc)+1)*cel,
-        ax:(azar(n,4)-.5)*W*1.4,ay:(azar(n,5)-.5)*Hh*1.4,az:(azar(n,6)-.5)*900,h:er.o==='humano'})});k.cx=j*(cw+gap)+cw/2});
+      const P=[],filas=Math.max(1,Math.ceil(mx/pc));cols.forEach((k,j)=>{const x0=j*(cw+gap)+(cw-cel*pc)/2;k.q.forEach((er,i)=>{P.push({x:x0+(i%pc)*cel,y:Hh-28-(Math.floor(i/pc)+1)*cel,
+        r:Math.floor(i/pc)/filas,h:er.o==='humano'})});k.cx=j*(cw+gap)+cw/2});
       NB={W,H:Hh,P,cols,cel}}
     const x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,W,Hh);
-    const a=Math.min(1,Math.max(0,(p-.12)*1.7)),ea=a<.5?2*a*a:1-Math.pow(-2*a+2,2)/2,giro=(1-ea)*p*4,cs=Math.cos(giro),sn=Math.sin(giro),t=Math.max(1,NB.cel-1);
-    NB.P.forEach(q=>{const rx=q.ax*cs-q.az*sn,rz=q.ax*sn+q.az*cs,f=700/(700+rz+450),sx=W/2+rx*f,sy=Hh/2+q.ay*f;
-      const X=sx+(q.x-sx)*ea,Y=sy+(q.y-sy)*ea,sz=t*(f*(1-ea)+ea);x.fillStyle=q.h?'#9a9a9a':'#0a0a0a';x.globalAlpha=.35+.65*Math.max(ea,Math.min(1,f));x.fillRect(X,Y,sz,sz)});
-    x.globalAlpha=Math.max(0,(a-.75)*4);x.fillStyle='#6e6e6e';x.font='500 11px Inter, system-ui, sans-serif';x.textAlign='center';
+    const a=Math.min(1,Math.max(0,(p-.12)*1.7)),t=Math.max(1,NB.cel-1),y1=Hh-28;
+    x.globalAlpha=Math.min(1,a*4);x.fillStyle='#bdbdbd';x.fillRect(0,y1,W,1);
+    NB.P.forEach(q=>{const k=Math.min(1,Math.max(0,(a*1.15-q.r*.9)*8));if(!k)return;x.fillStyle=q.h?'#9a9a9a':'#0a0a0a';x.globalAlpha=k;x.fillRect(q.x,q.y,t,t)});
+    x.globalAlpha=Math.min(1,a*4);x.fillStyle='#6e6e6e';x.font='500 11px Inter, system-ui, sans-serif';x.textAlign='center';
     NB.cols.forEach(k=>x.fillText(`${nCaso(k.c)} ${k.l}`,k.cx,Hh-8));x.globalAlpha=1};
   const pinta=(e,p)=>{e.style.setProperty('--p',p.toFixed(4));const k=e.dataset.esc;
     if(k==='ab'){if(e.dataset.vis==='casos')flujo(e,p);else if(e.dataset.vis==='aprendizaje')nube(e,p);else if(e.dataset.vis==='teoria')baraja(e,p)}
     else if(k==='tun'){const W=e.querySelector('.tun').clientWidth,Hh=e.querySelector('.tun').clientHeight,D=Math.min(430,Math.max(240,W*.75)),n=FIG.length;
-      FIG.forEach((f,i)=>{const z=-(i+1)*D+p*(n+1)*D,lado=i%2?1:-1,x=lado*W*(W<500?.1+(i%3)*.04:.2+(i%3)*.05),y=((i*7)%5-2)*Hh*.07;
-        const op=z<-5*D?0:z<-4*D?(z+5*D)/D:z>0?0:z>-360?-z/360:1;
-        f.style.opacity=op.toFixed(3);f.style.transform=`translate(-50%,-50%) translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${z.toFixed(1)}px) rotateY(${(-lado*14).toFixed(1)}deg)`});
+      // v6.7: las láminas se relevan en el centro con un fundido (antes venían volando desde el fondo)
+      FIG.forEach((f,i)=>{const u=Math.min(1,Math.max(0,p*1.04))*n-i,op=u<=0||u>=1?0:u<.2?u/.2:u>.8?(1-u)/.2:1;
+        f.style.opacity=op.toFixed(3);f.style.transform=`translate(-50%,-50%) translateY(${((.5-Math.min(1,Math.max(0,u)))*24).toFixed(1)}px)`});
       const fase=Math.min(FRASES.length-1,Math.floor(p*FRASES.length*1.08));FRASES.forEach((li,i)=>{li.classList.toggle('on',i===fase);li.classList.toggle('ya',i<fase)})}
     else if(k==='pas'){const cx=innerWidth/2,x0=$('#pasT').parentElement.getBoundingClientRect().left-p*dx;PASOS.forEach(li=>{const d=Math.max(-1.6,Math.min(1.6,(x0+li.offsetLeft+li.offsetWidth/2-cx)/Math.max(320,innerWidth*.5)));
-      li.style.transform=`translateZ(${(-Math.abs(d)*140).toFixed(1)}px) rotateY(${(-d*24).toFixed(1)}deg)`;li.style.opacity=(1-Math.min(.75,Math.abs(d)*.5)).toFixed(3)})}};
+      li.style.transform='';li.style.opacity=(1-Math.min(.75,Math.abs(d)*.5)).toFixed(3)})}};
   // Móvil (v6.3): al entrar en una sección, su apertura se pone en marcha sola (el título se aparta y aparecen el texto
   // y el objeto) y el dedo sigue desde ahí; además el gesto se suaviza más, para que nada pase demasiado deprisa.
   const MOV=matchMedia('(max-width:820px)'),AUTO=.42;let t0=0,vistaAnt=null;
@@ -1649,7 +1644,7 @@ const ESC=(()=>{
   addEventListener('scroll',()=>{const f=$('#v-caso:not([hidden]) .cport');if(!f||QUIETO)return;const r=f.getBoundingClientRect();
     f.style.setProperty('--e',Math.min(1,Math.max(0,(innerHeight-r.top)/(innerHeight*.55))).toFixed(3))},{passive:true});
   // Láminas y tarjetas: se inclinan hacia el puntero, como una hoja que se coge con la mano
-  if(!QUIETO&&matchMedia('(hover:hover) and (pointer:fine)').matches){const INC='.cc .im,.card .im,.tira .it .im,.real .im';
+  if(false){const INC='.cc .im,.card .im,.tira .it .im,.real .im';
     document.addEventListener('pointermove',e=>{const c=e.target.closest&&e.target.closest(INC);if(!c)return;const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
       c.style.setProperty('--ry',(x*10).toFixed(2)+'deg');c.style.setProperty('--rx',(-y*10).toFixed(2)+'deg')});
     document.addEventListener('pointerout',e=>{const c=e.target.closest&&e.target.closest(INC);if(c&&!c.contains(e.relatedTarget)){c.style.removeProperty('--rx');c.style.removeProperty('--ry')}})}
