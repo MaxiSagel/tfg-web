@@ -2591,8 +2591,8 @@ function ruta(){
   if(h==='caso'){ficha(caso);ESC.caso(caso);document.title=`${nCaso(caso)} · ${nom(caso)} · TFG`}
   else document.title=SECC[h]?`${SECC[h]} · ${TITULO}`:TITULO;
   let destino=null;
-  if(h==='metodo'){metodo();if(sub==='versiones')destino=$$('#tMet > .pane')[3];if(sub==='lineas')destino=$$('#tMet > .pane')[2];
-    if(sub&&sub.startsWith('glosario')){const g=sub.split('/')[1],el=g&&$('#g-'+g);$$('#glos > div').forEach(x=>x.classList.toggle('on',x===el));destino=el||$$('#tMet > .pane')[5]}}
+  if(h==='metodo'){metodo();{const t={versiones:'Versiones',lineas:'Dos líneas',simula:'Simula un caso'}[sub];if(t)destino=$$('#tMet > .pane').find(p=>p.dataset.tab===t)||destino}
+    if(sub&&sub.startsWith('glosario')){const g=sub.split('/')[1],el=g&&$('#g-'+g);$$('#glos > div').forEach(x=>x.classList.toggle('on',x===el));destino=el||$$('#tMet > .pane').find(p=>p.dataset.tab==='Glosario')}}
   if(h==='resultados'){resultados();const k=['resumen','teoria','parecido','dispersion','criterios','fiabilidad','tabla'].indexOf(sub);if(k>=0)destino=$$('#tRes > .pane')[k]}
   if(h==='aprendizaje')errores(sub&&(FICHAS[sub]||sub==='usuario')?sub:(sub===null?undefined:''));
   if(h==='evolucion')evolucion(sub&&FICHAS[sub]?sub:null);
