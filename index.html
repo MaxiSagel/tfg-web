@@ -967,12 +967,49 @@ html[data-tema=oscuro] .cmp .lupa,html[data-tema=oscuro] #pop .caja{box-shadow:n
 .sx-bar{display:block;height:2px;background:var(--li);position:relative;overflow:hidden;width:100%}.sx-bar b{position:absolute;inset:0;margin:0;background:var(--tx);transform-origin:0 50%;transform:scaleX(0)}
 .sx-rev:empty{display:none}.sx-rev{margin-bottom:16px}
 @media(max-width:1000px){.sx-turno{grid-template-columns:minmax(0,1fr) 280px}.sx-ini{grid-template-columns:1fr;gap:24px}}
-@media(max-width:760px){.sx{height:auto;min-height:0}.sx-st{container-type:normal;overflow:visible;min-height:60svh}.sx-esc{height:auto}
-  .sx-top{flex-direction:column;align-items:stretch}.sx-fases li span{display:none}.sx-fases li.on span{display:block;position:absolute;left:0;bottom:0}.sx-fases{position:relative;padding-bottom:18px}
-  .sx-ctl{justify-content:flex-end}.sx-voz{flex-direction:column;gap:6px}.sx-voz .t{font-size:16px}
-  .sx-busca,.sx-par,.sx-turno,.sx-idea,.sx-doc,.sx-fin{grid-template-columns:1fr}.sx-cri-h,.sx-cri-r{grid-template-columns:minmax(0,1fr) 30px 30px 30px}.sx-cri-h span:not(:first-child){font-size:0}
-  .sx-crl{max-height:none}.sx-elige{grid-template-columns:1fr}.sx-elige .im,.sx-doc .ft{height:200px}.sx-cro{height:260px}.sx-ev .im{height:220px}.sx-cnt{grid-template-columns:1fr}
-  .sx-lam{width:100%}.sx-pts ol{max-height:none}.sx-eq .sx-ag:not(.on){display:none}}
+/* Móvil (v7.3): la misma pantalla única que en el ordenador, en una columna; cada escena se ajusta al alto que queda */
+.sx-tl .ac{display:none}
+@media(max-width:760px){
+  .sx{min-height:0;padding-bottom:12px}
+  .sx-top{padding:8px 0 6px}.sx-eq{padding:0}.sx-eq .sx-ag:not(.on){display:none}
+  .sx-voz{flex-wrap:wrap;align-items:center;gap:4px 10px;padding:8px 0;min-height:0}
+  .sx-voz .q{min-width:0;font-size:9.5px;flex:1 1 auto}.sx-voz .t{order:3;flex:1 1 100%;font-size:15px;line-height:1.35}
+  .sx-ctl{order:2;gap:5px}.sx-ctl button{padding:6px 9px;font-size:11px}
+  .sx-st{padding:10px 0 0}
+  .sx-tl{padding:8px 0 0}.sx-tl ol{display:none}.sx-tl .ac{display:block;text-align:center;font:600 10.5px/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase;margin-top:6px}
+  .sx h5{font-size:9.5px;margin-bottom:8px}
+  .sx-esc{overflow:auto}
+  /* portada */
+  .sx-ini{display:flex;flex-direction:column;gap:22px}.sx-ini>.sx-lin{order:-1}.sx-ini h3{font-size:26px;margin-bottom:14px}
+  .sx-ini li{font-size:14px;padding:10px 0}.sx-lin button{padding:16px 16px}.sx-lin button b{font-size:21px}
+  /* búsqueda y elección */
+  .sx-busca{display:flex;flex-direction:column;gap:12px}
+  .sx-fu{display:flex;flex-wrap:wrap;gap:4px 12px;border:0}.sx-fu li{border:0;padding:2px 0;font-size:11.5px;gap:6px}.sx-fu li i{width:11px;height:11px}
+  .sx-check li.ok i::after,.sx-fu li.ok i::after{left:3px;top:1px;width:3px;height:6px}
+  .sx-cri-h,.sx-cri-r{grid-template-columns:minmax(0,1fr) 26px 26px 26px;gap:6px}.sx-cri-h span:not(:first-child){font-size:0}
+  .sx-cri-r{font-size:13px;padding:6px 0}.sx-cri-r small{font-size:11px}.sx-crl{max-height:calc(100cqh - 120px)}
+  .sx-elige{grid-template-columns:1fr;gap:10px}.sx-elige button{min-height:0;padding:16px 16px 14px;gap:3px}
+  .sx-elige b{font-size:22px;margin:0 0 4px;padding-right:80px}.sx-elige small{font-size:12.5px}.sx-elige small+small{margin-bottom:10px}
+  .sx-elige button .sx-cta{padding:9px 14px;font-size:13px}.sx-elige button>em{position:static;align-self:flex-start;margin-bottom:6px}.sx-elige b{padding-right:0}
+  /* encargo, idea */
+  .sx-doc h4{font-size:26px}.sx-doc .tx{font-size:15px}.sx-doc .h{padding-bottom:10px;margin-bottom:14px}
+  .sx-idea{display:flex;flex-direction:column;gap:12px}.sx-cro{height:42cqh;flex:none}.sx-idea .tx{font-size:14px;margin-bottom:10px}.sx-nota{font-size:12.5px}
+  /* correcciones: lámina arriba, comentarios debajo con su propio desplazamiento */
+  .sx-turno{display:flex;flex-direction:column;align-items:stretch;gap:10px;height:100%}
+  .sx-cen{height:auto;flex:none}.sx-lam{width:min(100%,calc(46cqh * var(--r)))}.sx-cap{font-size:11px;margin-top:4px}
+  .sx-pts{flex:1;min-height:0;height:auto}.sx-com{height:100%}.sx-pts ol{flex:1 1 auto}
+  .sx-pts li{grid-template-columns:34px 1fr;font-size:12.5px;padding:7px 0}
+  .sx-cor{padding:14px}.sx-cor p{font-size:13.5px;margin-bottom:12px}.sx-cor .sx-go{padding:14px;font-size:16px}
+  .sx-sig{margin-top:10px}.sx-tag{font-size:8.5px;padding:4px 6px;left:6px;top:6px}.sx-tag.d{right:6px;left:auto}
+  .sx-hd::after{width:30px;height:30px;left:-16px;margin-top:-15px;line-height:30px;font-size:13px}
+  /* recuento, evaluación, auditoría, cierre */
+  .sx-cnt{grid-template-columns:1fr}.sx-cnt div{padding:12px 0;border-bottom:1px solid var(--li)}.sx-cnt b{font-size:46px;margin-bottom:4px}.sx-cnt span{font-size:14px}
+  .sx-par{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}.sx-ev{padding:8px;min-width:0}.sx-ev .h{height:22px;margin-bottom:6px}.sx-ev .h b{font-size:14px;gap:5px;white-space:nowrap}.sx-ev .h b .pt{width:9px;height:9px}.sx-ev .tuya{display:none}
+  .sx-ev .tuya{font-size:8px;padding:3px 5px}.sx-ev .im{height:calc(100cqh - 190px)}.sx-ev dl{grid-template-columns:1fr;gap:8px}.sx-ev dt{font-size:10.5px}.sx-ev dd{font-size:24px}
+  .sx-mej li{grid-template-columns:28px 1fr;font-size:14px;padding:9px 0}
+  .sx-fin h3{font-size:34px}.sx-fin .m{margin-bottom:24px}.sx-fin .bt{flex-direction:column;gap:10px}.sx-fin .bt .sx-go{text-align:center;font-size:16px;padding:16px 20px}
+  .sx-velo .sx-carga{padding:14px}.sx-carga li{font-size:12.5px}
+}
 .chip[aria-pressed=true] .pt{border-color:#fff}.chip[aria-pressed=true] .pt-B{background:transparent}
 .l.l-A{background:var(--tx);color:#fff}
 .lin-nota{display:flex;flex-wrap:wrap;gap:4px 22px;align-items:baseline;border-top:1px solid var(--li);border-bottom:1px solid var(--li);padding:9px 0;margin:-4px 0 28px;font:13.5px/1.5 var(--sans);color:#333}
@@ -2578,7 +2615,7 @@ let SIMV=null;
     </div>
     <div class="sx-voz"><span class="q" id="sxQ"></span><span class="t" id="sxT"></span><div class="sx-ctl"><button id="sxA" hidden>← Paso atrás</button><button id="sxP" hidden>Pausa</button><button id="sxR" hidden>Reiniciar</button></div><i class="sx-lee" id="sxL"><b></b></i></div>
     <div class="sx-st" id="sxS"></div>
-    <div class="sx-tl" id="sxTL" hidden><div class="tr"><i class="f"></i><i class="h"></i></div><ol></ol></div>`;
+    <div class="sx-tl" id="sxTL" hidden><div class="tr"><i class="f"></i><i class="h"></i></div><ol></ol><span class="ac"></span></div>`;
   const ST=$('#sxS'),T=$('#sxT'),Q=$('#sxQ');
   const an=(el,kf,o={})=>el.animate(kf,{duration:450,easing:EASE,fill:'both',...o});
   const entra=(el,o)=>an(el,[{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'none'}],o);
@@ -2812,6 +2849,7 @@ let SIMV=null;
   const tlMax=()=>tlItems().length-1;
   function tlPinta(){const it=tlItems(),k=it.map(x=>x.et).join('|');
     if(k!==tlK){tlK=k;TLol.innerHTML=it.map((x,i)=>`<li data-i="${i}" title="${esc(x.et)}">${esc(x.et)}</li>`).join('');}
+    const ac=TL.querySelector('.ac'),act=(it[Math.min(S.i,it.length-1)]||{}).et||'';ac.textContent=`${act} · ${Math.min(S.i+1,it.length)} de ${it.length}`;
     TLol.querySelectorAll('li').forEach((li,i)=>{li.classList.toggle('on',i===S.i);li.classList.toggle('hecho',i<S.i);li.classList.toggle('no',i>tlMax())})}
   function tlPon(x){TLf.style.width=x*100+'%';TLh.style.left=x*100+'%'}
   let tlArr=false;
